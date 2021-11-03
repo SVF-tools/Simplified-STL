@@ -1,0 +1,47 @@
+// #include <iterator> // For std::forward_iterator_tag
+// #include <cstddef>  // For std::ptrdiff_t
+
+template<class T> 
+class forward_list{
+
+  public:
+    struct iterator 
+    {
+      /* ITERATOR PROPERTIES */
+      // using iterator_category = std::forward_iterator_tag;
+      // using difference_type   = std::ptrdiff_t;
+      using value_type        = T;            // the type the iterator iterates over
+      using pointer           = value_type*;  // Defines a pointer to the type iterated over
+      using reference         = value_type&;  // Defines a reference to the type iterated over
+      iterator(pointer ptr) : m_ptr(ptr) {}
+
+      reference operator*() const { return *m_ptr; }
+      pointer operator->() { return m_ptr; }
+
+      private:
+        pointer m_ptr;
+    };
+
+    // construct/copy destroy
+    forward_list() { }  // empty constructor
+    forward_list(forward_list&& x);
+
+    // Iterators
+    iterator begin() { return iterator(&begin_ptr); }
+    iterator end() { return iterator(&end_ptr); }
+    
+
+    void push_front(const T& value){
+      
+    }
+
+    const T& front(){
+      return frnt;
+    }
+  
+  private:
+    T frnt;
+    T end_ptr;
+    T begin_ptr;
+    
+};

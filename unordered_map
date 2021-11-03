@@ -1,0 +1,23 @@
+//#include "pair.h"
+
+template<class Key, class T>
+class unordered_map{
+    public:
+        struct pair{
+            typedef T1 first_type;
+            typedef T2 second_type;
+            T1 first;
+            T1 second;
+        };
+        struct const_iterator{
+            using value_type    = T;
+            using pointer       = value_type*;
+            using reference     = value_type&;
+        };
+        // begin
+        unordered_map() {}
+
+        // Iterators
+    private:
+
+};

@@ -1,0 +1,30 @@
+template <class T> class deque{
+private:
+
+
+    T frnt;
+public:
+
+    struct iterator{
+        T val;
+    } bgn;
+
+    deque(){
+
+    }
+
+    void push_back(const T){
+
+    }
+
+    T front(){
+
+        return frnt;
+    }
+
+    deque::iterator begin(){
+        iterator *p;
+        p = &bgn;
+        return *p;
+    }
+};

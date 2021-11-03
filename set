@@ -1,0 +1,31 @@
+template<class Key>
+class set{
+
+    public:
+        struct const_iterator
+        {
+            using value_type    = Key;
+            using pointer       = Key*;
+            using reference     = Key&;
+            const_iterator(pointer ptr) : m_ptr(ptr) {}
+            reference operator*() const { return *m_ptr; }
+            pointer operator->() { return m_ptr; }
+
+            private:
+                pointer m_ptr;
+        };
+
+        set() { }
+        // insert
+        void insert(const Key&){}
+
+        //Iterators
+        const_iterator begin() { return const_iterator(&begin_ptr); }
+        // const_iterator end() { return const_iterator(&val[200]); }
+
+    private:
+        //Key val[200];
+        Key begin_ptr;
+        // Key end_ptr;
+
+};
