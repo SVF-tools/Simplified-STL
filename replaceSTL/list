@@ -1,8 +1,8 @@
 template <typename T>
-class set {
+class list {
 private:
-
-    T val;
+    T val[200];
+    T frnt;
 public:
 
     struct const_iterator
@@ -15,28 +15,29 @@ public:
 
         const_iterator(pointer ptr) : m_ptr(ptr) {}
 
-        pointer& operator*() { return m_ptr;}
-        pointer* operator ->() { return &m_ptr; }
-
+        pointer operator->() { return m_ptr; }
+        reference operator*() {return m_ptr; }
 
     private:
 
         pointer m_ptr;
-
+        
 
     };
 
-    const_iterator  begin() { return const_iterator(val); }
+    const_iterator begin() { return const_iterator(val[0]); }
 
-    set() : val(0){
-        
-    }
-
-    void insert(const T &p) {
+    list() {
 
     }
 
+    void push_back(T a){
+      
+    }
 
+    T &front() {   
+      return frnt;
+    }
 
 private:
 

@@ -1,21 +1,20 @@
-template <typename T>
-class set {
+template <typename K, typename V>
+class map {
 private:
 
-    T val;
+    std::pair<K,V> val;
 public:
 
     struct const_iterator
     {
-        using value_type = T;
-        using pointer = T; 
-        using reference = T&;
+        using value_type = std::pair<K, V>;
+        using pointer = std::pair<K, V>; 
+        using reference = std::pair<K, V>&;
 
 
 
         const_iterator(pointer ptr) : m_ptr(ptr) {}
 
-        pointer& operator*() { return m_ptr;}
         pointer* operator ->() { return &m_ptr; }
 
 
@@ -28,11 +27,13 @@ public:
 
     const_iterator  begin() { return const_iterator(val); }
 
-    set() : val(0){
-        
+    map() {
+
     }
 
-    void insert(const T &p) {
+
+
+    void insert(const std::pair<K, V> &p) {
 
     }
 

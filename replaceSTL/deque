@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 template <class T> class deque{
 private:
     T frnt;
@@ -24,4 +25,50 @@ public:
         p = &bgn;
         return *p;
     }
+=======
+template <typename T>
+class deque {
+private:
+    T val[200];
+    T frnt;
+public:
+
+    struct iterator
+    {
+        using value_type = T;
+        using pointer = T; 
+        using reference = T&;
+
+
+
+        iterator(pointer ptr) : m_ptr(ptr) {}
+
+        pointer operator->() { return m_ptr; }
+        reference operator*() {return m_ptr; }
+
+    private:
+
+        pointer m_ptr;
+        
+
+    };
+
+    iterator begin() { return iterator(val[0]); }
+
+    deque() {
+
+    }
+
+    void push_back(T a){
+      
+    }
+
+    T &front() {   
+      return frnt;
+    }
+
+private:
+
+
+>>>>>>> 7706b33d69cd19ce6c60b3b87535504e55469274
 };

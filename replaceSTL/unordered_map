@@ -1,23 +1,46 @@
-//#include "pair.h"
+template <typename K, typename V>
+class unordered_map {
+private:
 
-template<class Key, class T>
-class unordered_map{
-    public:
-        struct pair{
-            typedef T1 first_type;
-            typedef T2 second_type;
-            T1 first;
-            T1 second;
-        };
-        struct const_iterator{
-            using value_type    = T;
-            using pointer       = value_type*;
-            using reference     = value_type&;
-        };
-        // begin
-        unordered_map() {}
+    std::pair<K,V> val;
+public:
 
-        // Iterators
+    struct const_iterator
+    {
+        using value_type = std::pair<K, V>;
+        using pointer = std::pair<K, V>; 
+        using reference = std::pair<K, V>&;
+
+
+
+        const_iterator(pointer ptr) : m_ptr(ptr) {}
+
+        pointer* operator ->() { return &m_ptr; }
+
+
     private:
+
+        pointer m_ptr;
+
+
+    };
+
+    const_iterator  begin() { return const_iterator(val); }
+
+    unordered_map() {
+
+    }
+
+    void insert(const std::pair<K, V> &p) {
+
+    }
+
+    V& operator[] (int a){
+        return val.second;
+    }
+
+
+private:
+
 
 };

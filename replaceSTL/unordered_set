@@ -1,0 +1,44 @@
+template <typename T>
+class unordered_set {
+private:
+
+    T val;
+public:
+
+    struct iterator
+    {
+        using value_type = T;
+        using pointer = T; 
+        using reference = T&;
+
+
+
+        iterator(pointer ptr) : m_ptr(ptr) {}
+
+        pointer& operator*() { return m_ptr;}
+        pointer* operator ->() { return &m_ptr; }
+
+
+    private:
+
+        pointer m_ptr;
+
+
+    };
+
+    iterator  begin() { return iterator(val); }
+
+    unordered_set() : val(0){
+        
+    }
+
+    void insert(const T &p) {
+
+    }
+
+
+
+private:
+
+
+};

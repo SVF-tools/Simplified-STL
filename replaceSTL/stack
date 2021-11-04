@@ -1,5 +1,5 @@
 template <typename T>
-class forward_list {
+class stack {
 private:
     T val[200];
     T frnt;
@@ -27,15 +27,19 @@ public:
 
     iterator begin() { return iterator(val[0]); }
 
-    forward_list() {
+    stack() {
 
     }
 
-    void push_front(T a){
+    void push(T a){
       
     }
 
-    T &front() {   
+    void pop(){
+        
+    }
+
+    T &top() {   
       return frnt;
     }
 
