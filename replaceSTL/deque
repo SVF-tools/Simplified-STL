@@ -1,7 +1,5 @@
 template <class T> class deque{
 private:
-
-
     T frnt;
 public:
 
@@ -18,7 +16,6 @@ public:
     }
 
     T front(){
-
         return frnt;
     }
 
