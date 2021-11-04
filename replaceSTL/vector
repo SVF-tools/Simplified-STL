@@ -1,11 +1,11 @@
 template <typename T>
-class deque {
+class vector {
 private:
     T val[200];
     T frnt;
 public:
 
-    struct iterator
+    struct const_iterator
     {
         using value_type = T;
         using pointer = T; 
@@ -13,7 +13,7 @@ public:
 
 
 
-        iterator(pointer ptr) : m_ptr(ptr) {}
+        const_iterator(pointer ptr) : m_ptr(ptr) {}
 
         pointer operator->() { return m_ptr; }
         reference operator*() {return m_ptr; }
@@ -25,9 +25,9 @@ public:
 
     };
 
-    iterator begin() { return iterator(val[0]); }
+    const_iterator begin() { return const_iterator(val[0]); }
 
-    deque() {
+    vector() {
 
     }
 
@@ -35,8 +35,16 @@ public:
       
     }
 
+    void pop(){
+        
+    }
+
     T &front() {   
       return frnt;
+    }
+
+    T& operator[] (int a){
+        return val[a];
     }
 
 private:

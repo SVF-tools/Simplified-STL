@@ -1,5 +1,5 @@
 template <typename T>
-class deque {
+class stack {
 private:
     T val[200];
     T frnt;
@@ -27,15 +27,19 @@ public:
 
     iterator begin() { return iterator(val[0]); }
 
-    deque() {
+    stack() {
 
     }
 
-    void push_back(T a){
+    void push(T a){
       
     }
 
-    T &front() {   
+    void pop(){
+        
+    }
+
+    T &top() {   
       return frnt;
     }
 

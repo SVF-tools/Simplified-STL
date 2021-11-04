@@ -1,8 +1,9 @@
-template <typename T>
-class deque {
+template <typename T, int S>
+class array {
 private:
     T val[200];
     T frnt;
+    T bck;
 public:
 
     struct iterator
@@ -27,16 +28,20 @@ public:
 
     iterator begin() { return iterator(val[0]); }
 
-    deque() {
+    array() {
 
     }
 
-    void push_back(T a){
-      
+    T &back(){
+      return bck;
     }
 
     T &front() {   
       return frnt;
+    }
+
+    T& operator[] (int a){
+        return val[a];
     }
 
 private:
