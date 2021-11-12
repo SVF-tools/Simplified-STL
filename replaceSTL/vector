@@ -1,8 +1,9 @@
 template <typename T>
 class vector {
 private:
-    T val[200];
-    T frnt;
+    T* arr;
+    int capacity;
+    int size;
 public:
 
     struct const_iterator
@@ -10,8 +11,6 @@ public:
         using value_type = T;
         using pointer = T; 
         using reference = T&;
-
-
 
         const_iterator(pointer ptr) : m_ptr(ptr) {}
 
@@ -21,30 +20,120 @@ public:
     private:
 
         pointer m_ptr;
-        
-
+    
     };
 
-    const_iterator begin() { return const_iterator(val[0]); }
 
     vector() {
-
+        arr = new T[1];
+        capacity = 1;
+        size = 0;
     }
 
-    void push_back(T a){
-      
+    //iterator access-------------------------------------------
+    const_iterator begin() { return const_iterator(arr[0]); }
+
+    //Capacity access--------------------------------------------
+    int get_size(){
+        return size;
     }
 
-    void pop(){
-        
+    void resize(int new_size){
+        T* tempArr = new T[new_size];
+        for(int i=0; i < new_size; i++){
+            if(i<size){
+                tempArr[i] = arr[i];
+            }
+            else{
+                tempArr[i] = 0;
+            }
+        }
+        arr = tempArr;
+        size = new_size;
+        capacity = new_size;
+    }
+
+    void resize(int new_size, int new_element){
+        T* tempArr = new T[new_size];
+        for(int i=0; i < new_size; i++){
+            if(i<size){
+                tempArr[i] = arr[i];
+            }
+            else{
+                tempArr[i] = new_element;
+            }
+        }
+        arr = tempArr;
+        size = new_size;
+        capacity = new_size;
+    }
+
+    int get_capacity(){
+        return capacity;
+    }
+
+    bool empty(){
+        return size == 0;
+    }
+
+    void reserve(int new_element_count){
+        int tempCapacity = capacity;
+        while(tempCapacity < new_element_count){
+            tempCapacity *= 2;
+        }
+        if(capacity != tempCapacity){
+            resize(tempCapacity);
+        }
+    }
+
+    void shrink_to_fit(){
+        resize(size);
+    }
+
+    //Element Access------------------------------------------------------------
+
+    T& operator[] (int a){
+        return arr[a];
     }
 
     T &front() {   
-      return frnt;
+      return arr[0];
     }
 
-    T& operator[] (int a){
-        return val[a];
+    T &at(int a){
+        if(a<size){
+            return arr[a];
+        }
+        return nullptr;
+    }
+
+    T &back(){
+        return arr[size];
+    }
+
+    T* data(){
+        T* temp = begin();
+        return temp;
+    }
+
+    //Element modifiers
+
+    void push_back(T a){
+        if(size == capacity){
+            T* tempArr = new T[2*capacity];
+            for(int i=0; i<capacity; i++){
+                tempArr[i] = arr[i];
+            }
+            capacity *= 2;
+            arr = tempArr;
+        }
+
+        arr[size] = a;
+        size++;
+    }
+
+    void pop(){
+        size--;
     }
 
 private:
