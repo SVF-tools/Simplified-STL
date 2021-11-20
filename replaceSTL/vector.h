@@ -25,6 +25,7 @@ namespace std{
 
                 pointer operator->() { return t_ptr; }
                 reference operator*() {return t_ptr; }
+                iterator& operator++() { t_ptr++; return *this; }
                 
                 private:
                     pointer t_ptr;
@@ -38,11 +39,19 @@ namespace std{
 
                 const_iterator(pointer ptr) : m_ptr(ptr) {}
 
-                pointer operator->() { return m_ptr; }
-                reference operator*() {return m_ptr; }
+                pointer operator->() const { return m_ptr; }
+                reference operator*() const {return m_ptr; }
 
                 private:
                     pointer m_ptr;
+            };
+
+            struct reverse_iterator{
+
+            };
+
+            struct const_reverse_iterator{
+
             };
 
             /* construct/copy/destroy */
@@ -111,7 +120,7 @@ namespace std{
             // constexpr void     swap(vector&)
             // noexcept(allocator_traits<Allocator>::propagate_on_container_swap::value ||
             //         allocator_traits<Allocator>::is_always_equal::value);
-            constexpr void     clear() noexcept;
+            constexpr void     clear();
 
     }; // end class vector
     
@@ -271,6 +280,80 @@ namespace std{
         return arr;
     }
     
+    
     // MODIFIERS
+    template<class T>
+    template<class... Args>
+    vector<T>::reference vector<T>::emplace_back(Args&&... args){
 
+    }
+
+    template<class T>
+    void vector<T>::push_back(const T& x)
+    {
+        
+    }
+
+    template<class T>
+    void vector<T>::push_back(T&& x)
+    {
+        
+    }
+
+    template<class T>
+    void vector<T>::pop_back()
+    {
+        
+    }
+
+    // END MODIFIERS
+
+    template<class T>
+    template<class... Args>
+    constexpr vector<T>::iterator vector<T>::emplace(const_iterator position, Args&&... args){
+
+    }
+
+    template<class T>
+    constexpr vector<T>::iterator vector<T>::insert(const_iterator position, const T& x){
+
+    }
+
+    template<class T>
+    constexpr vector<T>::iterator vector<T>::insert(const_iterator position, T&& x){
+
+    }
+
+    template<class T>
+    constexpr vector<T>::iterator vector<T>::insert(const_iterator position, size_type n, const T& x){
+
+    }
+
+    // template<class InputIt>
+    // template<class T>
+    // constexpr vector<T>::iterator vector<T>::insert(const_iterator position, InputIt first, InputIt last){
+
+    // }
+
+    // template<class T>
+    // constexpr vector<T>::iterator vector<T>::insert(const_iterator position, initializer_list<T> il){
+
+    // }
+
+    template<class T>
+    constexpr vector<T>::iterator vector<T>::erase(const_iterator position){
+
+    }
+
+    template<class T>
+    constexpr vector<T>::iterator vector<T>::erase(const_iterator first, const_iterator last){
+
+    }
+
+    template<class T>
+    constexpr void vector<T>::clear(){
+
+    }
+
+    
 } // end namespace std
