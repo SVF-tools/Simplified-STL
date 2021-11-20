@@ -25,7 +25,7 @@ namespace std{
             }
 
             // capacity
-            bool empty() { return current == 0; }
+            bool empty() const { return current == 0; }
             size_type size() {}
             size_type max_size() {}
 
@@ -37,7 +37,7 @@ namespace std{
         private:
             int capacity;
             int current;
-    };
+    }; // end map class
 
 } // end namespace std
 

@@ -1,45 +1,44 @@
-template <typename K, typename V>
-class map {
-private:
+#include <utility>
 
-    std::pair<K,V> val;
-public:
+#ifndef MAP_H
+#define MAP_H
 
-    struct const_iterator
-    {
-        using value_type = std::pair<K, V>;
-        using pointer = std::pair<K, V>; 
-        using reference = std::pair<K, V>&;
+namespace std{
+    template<class Key, class T>
+    class map {
+        public:
+            using key_type      = Key;
+            using mapped_type   = T;
 
+            struct const_iterator
+            {
+                using value_type = std::pair<K, V>;
+                using pointer = std::pair<K, V>; 
+                using reference = std::pair<K, V>&;
 
+                const_iterator(pointer ptr) : m_ptr(ptr) {}
 
-        const_iterator(pointer ptr) : m_ptr(ptr) {}
+                pointer* operator ->() { return &m_ptr; }
 
-        pointer* operator ->() { return &m_ptr; }
+                private:
+                pointer m_ptr;
+            }
 
+            // capacity
+            bool empty() { return current == 0; }
+            size_type size() {}
+            size_type max_size() {}
 
-    private:
+            // element access
+            mapped_type& operator[] (const key_type& x) {}
+            mapped_type& operator[] (key_type& x) {}
+            mapped_type&            at(const key_type& x) {}
+            const mapped_type&      at(const key_type& x) {}
+        private:
+            int capacity;
+            int current;
+    }; // end map class
 
-        pointer m_ptr;
+} // end namespace std
 
-
-    };
-
-    const_iterator  begin() { return const_iterator(val); }
-
-    map() {
-
-    }
-
-
-
-    void insert(const std::pair<K, V> &p) {
-
-    }
-
-
-
-private:
-
-
-};
+#endif
