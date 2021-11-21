@@ -6,8 +6,8 @@ namespace std{
         private:
             T* arr;
             static const size_t INITIAL_CAPACITY = 10;  // initial capacity of the array  
-            size_t current_capacity;                    // total capacity of the array
-            size_t num_items;                           // the current number of items in the array
+            size_t space;                               // space used by vector including elements and free space
+            size_t size;                                // the current number of items in the array
         public:
             /* Types */
             using value_type            = T;
@@ -21,14 +21,39 @@ namespace std{
                 using pointer = T*; 
                 using reference = T&;
 
-                iterator(pointer ptr) : t_ptr(ptr) {}
+                iterator(pointer ptr) : curr(ptr) {}
 
-                pointer operator->() { return t_ptr; }
-                reference operator*() {return t_ptr; }
-                iterator& operator++() { t_ptr++; return *this; }
+                pointer operator->() { return curr; }
+                reference operator*() {return curr; }
+                iterator& operator++() { curr++; return *this; }
+                /** Postfix increment operator
+                 * @return A copy of this iterator before being advanced 
+                 */
+                iterator operator++(int)
+                {
+                    iterator return_val = *this;
+                    ++(*this);
+                    return return_val;
+                }
+                iterator& operator--() { curr--; return *this; }
+                iterator operator--(int)
+                {
+                    iterator return_val = *this;
+                    --(*this);
+                    return return_val;
+                }
+                
+                bool operator==(const iterator& b) const
+                {
+                    return *curr == *b.curr;
+                } 
+                bool operator!=(const iterator& b) const
+                {
+                    return *curr != *b.curr
+                }
                 
                 private:
-                    pointer t_ptr;
+                    pointer curr;
             };
 
             struct const_iterator
@@ -41,9 +66,14 @@ namespace std{
 
                 pointer operator->() const { return m_ptr; }
                 reference operator*() const {return m_ptr; }
+                iterator& operator++ const { curr++; return *this; }
+                iterator operator++ const (int)
+                {
+                    iterator return_val
+                }
 
                 private:
-                    pointer m_ptr;
+                    pointer curr;
             };
 
             struct reverse_iterator{
@@ -58,13 +88,13 @@ namespace std{
             vector();
             explicit vector(int s);
             vector(const vector& x);            // copy constructor
-            const vector(vector&&);
+            const vector(vector&& x);
             const ~vector();
             vector& operator=(const vector& x); // copy assignment 
 
             // iterators
-            iterator begin();
-            const_iterator begin() const;
+            iterator               begin();
+            const_iterator         begin() const;
             iterator               end();
             const_iterator         end() const; 
             reverse_iterator       rbegin();
@@ -128,7 +158,27 @@ namespace std{
 
     // CONSTRUCTORS/DECONSTRUCTOR
     template<class T>
-    vector<T>::vector(): current_capacity(0), num_items(0), arr(0) {}
+    vector<T>::vector(): space(0), size(0), arr(0) {}
+
+    template<class T>
+    vector<T>::vector(int s): size(s), arr(new T[s], space(s))
+    {
+        for(int i = 0; i < size; ++i){
+            arr[i] = T();
+        }
+    }
+
+    // copy constructor const
+    template<class T>
+    vector<T>::vector(const vector& arg): size(arg.size), elements(new T[arg.size])
+    {
+        for(int i = 0; i < arg.size; ++i){
+            arr[i] = arg.elements[i];
+        }
+    }
+
+    // template<class T>
+    // const vector<T>::vector(vector&& arg)
 
     template<class T>
     vector<T>::~vector()
@@ -153,7 +203,7 @@ namespace std{
     template<class T>
     vector<T>::iterator vector<T>::end()
     {
-        return vector<T>::iterator(&arr[num_items]);
+        return vector<T>::iterator(&arr[size]);
     }
 
     template<class T>
@@ -167,25 +217,25 @@ namespace std{
     template<class T>
     bool vector<T>::empty() const
     {
-        return (num_items == 0);
+        return (size == 0);
     }
 
     template<class T>
     vector<T>::size_type vector<T>::size() const
     {
-        return num_items;
+        return size;
     }
 
     template<class T>
     vector<T>::size_type  vector<T>::max_size() const
     {
-        return current_capacity;
+        return space;
     }
 
     template<class T>
     vector<T>::size_type  vector<T>::capacity() const
     {
-        return current_capacity;
+        return space;
     }
 
     template<class T>
@@ -197,7 +247,7 @@ namespace std{
     template<class T>
     vector<T>::size_type  vector<T>::capacity() const
     {
-        return current_capacity;
+        return space;
     }
 
     template<class T>

@@ -1,50 +1,37 @@
-template <typename T, int S>
-class array {
-private:
-    T val[200];
-    T frnt;
-    T bck;
-public:
+#pragma once
 
-    struct iterator
-    {
-        using value_type = T;
-        using pointer = T; 
-        using reference = T&;
+namespace std{
+    template <typename T, unsigned int N>
+    class array {
+        public:
+            using value_type            = T;
+            using pointer               = T*;
+            using const_pointer         = const T;
+            using reference             = T&;
+            using const_reference       = const T&;
+            using size_type             = size_t;
+            
+            struct iterator{
 
+            };
 
+            struct const_iterator{
 
-        iterator(pointer ptr) : m_ptr(ptr) {}
+            };
 
-        pointer operator->() { return m_ptr; }
-        reference operator*() {return m_ptr; }
+            // CAPACITY
+            size_type size() const;
+            size_type max_size() const;
+            bool empty() const;
 
-    private:
-
-        pointer m_ptr;
-        
-
+        private:
+            size_t size;
+            T* array;
     };
+}
 
-    iterator begin() { return iterator(val[0]); }
 
-    array() {
 
-    }
-
-    T &back(){
-      return bck;
-    }
-
-    T &front() {   
-      return frnt;
-    }
-
-    T& operator[] (int a){
-        return val[a];
-    }
-
-private:
 
 
 };
