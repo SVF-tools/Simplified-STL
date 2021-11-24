@@ -14,6 +14,16 @@ To compile a C++ file into its LLVM IR using a simplified version of the C++ Sta
 ```
 clang++ -S -c -emit-llvm -IreplaceSTL ./basic_cpp_tests/forward_list-1.cpp -o check.ll
 ```
+## Compiling whole program
+```
+1) export LLVM_DIR=/usr/bin/llvm-12       (or whatever your path to llvm is)
+2) export LLVM_COMPILER=clang
+make CXX=wllvm++ CXX_FLAGS="<old flags> -IreplacerIncludes"  / cmake CMAKE_C_COMPILER=wllvm++ CMAKE_CXX_COMPILER=wllvm++ CMAKE_CXX_FLAGS="<old flags> -IreplacerIncludes"    (depending on type of project c/c++) [IMPORTANT: please redeclare your old flags in the <old flags> part as the flags stated within the make file will be overwritten] {the cmake command is untested we need to test it later}
+3) extract-bc <path to executable file created in step 2> -l$LLVM_DIR/bin/llvm-link
+4) llvm-dis <path to bc file created in step 3>
+
+This will achieve a human readable file for the whole program
+```
 
 ## TODO
 - [ ]  deque
