@@ -1,49 +1,85 @@
-template <typename T>
-class stack {
-private:
-    T val[200];
-    T frnt;
-public:
+// #include "vector"
+#ifndef STACK_H_
+#define STACK_H_
+#include "vector"
 
-    struct iterator
-    {
-        using value_type = T;
-        using pointer = T; 
-        using reference = T&;
-
-
-
-        iterator(pointer ptr) : m_ptr(ptr) {}
-
-        pointer operator->() { return m_ptr; }
-        reference operator*() {return m_ptr; }
-
+namespace std{
+    template <class T>
+    class stack {
     private:
+        std::vector<T> container;
 
-        pointer m_ptr;
-        
+    public:
+        using value_type        = typename container::value_type;
+        using reference         = typename container::reference;
+        using const_reference   = typename container::const_reference;
+        using size_type         = typename container::size_type;
+        using container_type    = container;
 
+        // Constructor
+        stack();
+        stack(const container_type& ctnr = container_type());
+
+        // Other member functions
+        bool                            empty() const;
+        size_type                       size() const;
+        value_type&                     top();
+        const value_type&               top() const;
+        void                            push(const value_type& val);
+        template<class... Args> void    emplace(Args&&... args);
+        void                            pop();
+        void                            swap(stack& x);
     };
 
-    iterator begin() { return iterator(val[0]); }
+    // START STACK IMPLEMENTATION
+    
+    template<class T>
+    bool stack<T>::empty() const
+    {
+        return container.empty();
+    }
 
-    stack() {
+    template<class T>
+    stack<T>::size_type stack<T>::size() const {
 
     }
 
-    void push(T a){
-      
+    template<class T>
+    stack<T>::value_type& stack<T>::top()
+    {
+
     }
 
-    void pop(){
-        
+    template<class T>
+    const stack<T>::value_type& stack<T>::top() const
+    {
+
     }
 
-    T &top() {   
-      return frnt;
+    template<class T>
+    void stack<T>::push(const stack<T>::value_type& val)
+    {
+
     }
 
-private:
+    template<class... Args>
+    template<class T>
+    void stack<T>::emplace(Args&&... args)
+    {
 
+    }
 
-};
+    template<class T>
+    void stack<T>::pop()
+    {
+
+    }
+
+    template<class T>
+    void stack<T>::swap(stack& x)
+    {
+
+    }
+} // end namespace std
+
+#endif

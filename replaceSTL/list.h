@@ -82,7 +82,7 @@ namespace std {
             iterator insert_after(const_iterator position, initializer_list<T> il);
 
         private:
-            T val[200];
+            T* arr;
             T frnt;
             unsigned int capacity;
             unsigned int current;

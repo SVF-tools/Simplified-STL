@@ -1,4 +1,5 @@
-#pragma once
+#ifndef VECTOR_H_
+#define VECTOR_H_
 
 namespace std{
     template <typename T>
@@ -58,18 +59,42 @@ namespace std{
 
             struct const_iterator
             {
-                using value_type = T;
-                using pointer = T*; 
-                using reference = T&;
+                using value_type = const T;
+                using pointer = const T*; 
+                using reference = const T&;
 
-                const_iterator(pointer ptr) : m_ptr(ptr) {}
+                const_iterator(pointer ptr) : curr(ptr) {}
 
-                pointer operator->() const { return m_ptr; }
-                reference operator*() const {return m_ptr; }
-                iterator& operator++ const { curr++; return *this; }
-                iterator operator++ const (int)
+                pointer operator->() const { return curr; }
+                reference operator*() const {return curr; }
+                const_iterator& operator++() const { curr++; return *this; }
+                const_iterator& operator++() const (int)
                 {
-                    iterator return_val
+                    const_iterator return_val = *this;
+                    ++(*this);
+                    return return_val;
+                }
+                const_iterator& operator--() const
+                {
+                    iterator return_val = *this;
+                    --(*this);
+                    return return_val;
+                }
+                const_iterator& operator--(int)
+                {
+                    iterator return_val = *this;
+                    --(*this);
+                    return return_val;   
+                }
+
+                bool operator==(const iterator& b) const
+                {
+                    return *curr == *b.curr;
+                }
+
+                bool operator!=(const iterator& b) const
+                {
+                    return *curr != *b.curr;
                 }
 
                 private:
@@ -407,3 +432,4 @@ namespace std{
 
     
 } // end namespace std
+#endif

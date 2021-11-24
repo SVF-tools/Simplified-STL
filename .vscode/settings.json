@@ -11,6 +11,9 @@
         "string_view": "cpp",
         "initializer_list": "cpp",
         "map": "cpp",
-        "set": "cpp"
+        "set": "cpp",
+        "queue": "cpp",
+        "stack": "cpp",
+        "iterator": "cpp"
     }
 }
