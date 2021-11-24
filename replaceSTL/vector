@@ -8,7 +8,7 @@ namespace std{
             T* arr;
             static const size_t INITIAL_CAPACITY = 10;  // initial capacity of the array  
             size_t space;                               // space used by vector including elements and free space
-            size_t size;                                // the current number of items in the array
+            size_t _size;                                // the current number of items in the array
         public:
             /* Types */
             using value_type            = T;
@@ -183,19 +183,19 @@ namespace std{
 
     // CONSTRUCTORS/DECONSTRUCTOR
     template<class T>
-    vector<T>::vector(): space(0), size(0), arr(0) {}
+    vector<T>::vector(): space(0), _size(0), arr(0) {}
 
     template<class T>
-    vector<T>::vector(int s): size(s), arr(new T[s], space(s))
+    vector<T>::vector(int s): _size(s), arr(new T[s], space(s))
     {
-        for(int i = 0; i < size; ++i){
+        for(int i = 0; i < _size; ++i){
             arr[i] = T();
         }
     }
 
     // copy constructor const
     template<class T>
-    vector<T>::vector(const vector& arg): size(arg.size), elements(new T[arg.size])
+    vector<T>::vector(const vector& arg): _size(arg.size), elements(new T[arg.size])
     {
         for(int i = 0; i < arg.size; ++i){
             arr[i] = arg.elements[i];
@@ -228,13 +228,13 @@ namespace std{
     template<class T>
     vector<T>::iterator vector<T>::end()
     {
-        return vector<T>::iterator(&arr[size]);
+        return vector<T>::iterator(&arr[_size]);
     }
 
     template<class T>
     vector<T>::const_iterator vector<T>::cend() const
     {
-        return vector<T>::const_iterator(&arr[size]);
+        return vector<T>::const_iterator(&arr[_size]);
     }
 
 
@@ -242,13 +242,13 @@ namespace std{
     template<class T>
     bool vector<T>::empty() const
     {
-        return (size == 0);
+        return (_size == 0);
     }
 
     template<class T>
     vector<T>::size_type vector<T>::size() const
     {
-        return size;
+        return _size;
     }
 
     template<class T>
