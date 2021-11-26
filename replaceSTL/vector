@@ -65,22 +65,22 @@ namespace std{
 
                 const_iterator(pointer ptr) : curr(ptr) {}
 
-                pointer operator->() const { return curr; }
-                reference operator*() const {return curr; }
-                const_iterator& operator++() const { curr++; return *this; }
-                const_iterator& operator++() const (int)
+                const pointer operator->() const { return curr; }
+                const reference operator*() const {return curr; }
+                const const_iterator& operator++() const { curr++; return *this; }
+                const const_iterator& operator++() const (int)
                 {
                     const_iterator return_val = *this;
                     ++(*this);
                     return return_val;
                 }
-                const_iterator& operator--() const
+                const const_iterator& operator--() const
                 {
                     iterator return_val = *this;
                     --(*this);
                     return return_val;
                 }
-                const_iterator& operator--(int)
+                const const_iterator& operator--(int)
                 {
                     iterator return_val = *this;
                     --(*this);
@@ -102,6 +102,28 @@ namespace std{
             };
 
             struct reverse_iterator{
+                using value_type    = T;
+                using pointer       = T*;
+                using reference     = T&;
+
+                reverse_iterator(pointer ptr) : curr(ptr) {}
+
+                pointer operator->() { return curr; }
+                reference operator*() { return curr; }
+                reverse_iterator& operator++() { curr++; return *this; }
+                reverse_iterator operator++(int)
+                {
+                    reverse_iterator return_val = *this;
+                    ++(*this);
+                    return return_val;
+                }
+                
+
+
+                reverse_iterator
+
+                private:
+                    pointer curr;
 
             };
 
@@ -217,6 +239,12 @@ namespace std{
     vector<T>::iterator vector<T>::begin()
     {
         return vector<T>::iterator(&arr[0]);
+    }
+
+    template<class T>
+    vector<T>::const_iterator vector<T>:: begin() const
+    {
+        return vector<T>::const_iterator(&arr[0])
     }
 
     template<class T>

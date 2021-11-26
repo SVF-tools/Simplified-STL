@@ -1,7 +1,7 @@
 # Simplified C++ STL
 
-We're implementing a simplified version of the C++
-Standard Library in aims of simplifying an LLVM IR to allow for less messy software analysis
+A simplified version of the C++
+Standard Library in aims of achieving a shorter, simpler LLVM IR to allow for a more efficient static software analysis.
 
 ## Compiling C++ files into IR
 To compile a C++ file into its LLVM IR, use the following command line argument
@@ -24,6 +24,58 @@ make CXX=wllvm++ CXX_FLAGS="<old flags> -IreplacerIncludes"  / cmake CMAKE_C_COM
 
 This will achieve a human readable file for the whole program
 ```
+
+## References
+All class templates were obtained from: https://en.cppreference.com/w/cpp/header and https://www.cplusplus.com/reference/stl/
+
+## Implementation
+
+### Vector
+Our simple implementation of the vector class uses a dynamic array.
+
+```
+namespace std{
+    template <typename T>
+    class vector {
+        private:
+            T* arr;
+            static const size_t INITIAL_CAPACITY = 10;  // initial capacity of the array  
+            size_t space;                               // space used by vector including elements and free space
+            size_t _size;                                // the current number of items in the array
+```
+
+### Array
+
+### Stack
+We are using our custom vector class as the underlying data structure for the simple stack
+```
+#include "vector"
+
+namespace std{
+    template <class T>
+    class stack {
+    private:
+        std::vector<T> container;
+```
+
+### Queue
+
+### Deque
+
+### Forward List
+
+### List
+
+### Map
+
+### Unordered Map
+
+### Set
+
+### Unordered_Set
+
+### Iterators
+
 
 ## TODO
 - [ ]  deque
