@@ -16,7 +16,7 @@ clang++ -S -c -emit-llvm -IreplaceSTL ./basic_cpp_tests/forward_list-1.cpp -o ch
 ```
 ## Compiling whole program
 ```
-1) export LLVM_DIR=/usr/bin/llvm-12       (or whatever your path to llvm is)
+1) export LLVM_DIR=/usr/lib/llvm-12       (or whatever your path to llvm is)
 2) export LLVM_COMPILER=clang
 3) make CXX=wllvm++ CXX_FLAGS="<old flags> -IreplacerIncludes" [OR] cmake CMAKE_C_COMPILER=wllvm++ CMAKE_CXX_COMPILER=wllvm++ CMAKE_CXX_FLAGS="<old flags> -IreplacerIncludes" (depending on type of project c/c++) 
 [IMPORTANT: please redeclare your old flags in the <old flags> part as the flags stated within the make file will be overwritten] 
