@@ -47,6 +47,15 @@ namespace std{
 ```
 
 ### Array
+A straightforward implementation of an array
+```
+namespace std{
+    template <typename T, unsigned int N>
+    class array {
+        private:
+            size_t size;
+            T* array;
+```
 
 ### Stack
 We are using our custom vector class as the underlying data structure for the simple stack
@@ -61,18 +70,22 @@ namespace std{
 ```
 
 ### Queue
+We aim to implement the queue using the custom list as our underlying data structure or as a singly-linked list.
 
 ### Deque
 
 ### Forward List
+The forward list class will be implemented as a singly-linked list using a custom forward_list node data structure
 
 ### List
+The list class will be implemented as a doubly-linked list using a custom list node data structure
 
 ### Map
 
 ### Unordered Map
 
 ### Set
+We aim to implement the set class as a BST
 
 ### Unordered_Set
 
