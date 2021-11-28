@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ARRAY_H_
+#define ARRAY_H_
 
 namespace std{
     template <typename T, unsigned int N>
@@ -59,10 +60,8 @@ namespace std{
             size_t size;
             T* array;
     };
+
+    // BEGIN IMPLEMENTATION
 }
+#endif
 
-
-
-
-
-};

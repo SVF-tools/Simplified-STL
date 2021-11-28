@@ -1,11 +1,91 @@
-namespace std{
+#ifndef FORWARD_LIST_H_
+#define FORWARD_LIST_H_
+
+namespace std {
     template <typename T>
     class forward_list {
     private:
-        T val[200];
-        T frnt;
+
     public:
+        using value_type        = T;
+        using reference         = value_type&;
+        using const_reference   = const value_type&;
+        using size_type         = size_t;
+
+        // Constructor / Destructor
 
 
+        // Iterators
+        iterator            before_begin();
+        const_iterator      before_begin() const;
+        iterator            begin();
+        const_iterator      begin() const;
+        iterator            end();
+        const_iterator      end() const;
+        const_iterator      cbefore_begin() const;
+        const_iterator      cbegin() const;
+        const_iterator      cend() const;
+
+        // Capacity
+        bool        empty() const;
+        size_type   max_size() const;
+
+        // Element access
+        reference       front();
+        const_reference front() const;
+
+        // Modifiers
+        template<clas InputIt> void assign (InputIt first, InputIt last);
+        void assign(size_type n, const T& val);
+        // TODO: void assign (initializer_list<value_type> il);
+        template<class... Args> reference emplace_front(Args&&... args);
+        void push_front(const T& x);
+        void push_front(T&& x);
+        void pop_front();
+        template <class... Args>
+        iterator emplace_after (const_iterator position, Args&&... args);
+        iterator insert_after ( const_iterator position, const value_type& val );
+        iterator insert_after ( const_iterator position, value_type&& val );
+        iterator insert_after ( const_iterator position, size_type n, const value_type& val );
+        template <class InputIterator>
+        iterator insert_after ( const_iterator position, InputIterator first, InputIterator last );
+        //iterator insert_after ( const_iterator position, initializer_list<value_type> il );
+        iterator erase_after (const_iterator position);
+        iterator erase_after (const_iterator position, const_iterator last);
+        void swap (forward_list& fwdlst);
+        void resize (size_type n);
+        void resize (size_type n, const T& val);
+        void clear();
+
+        // forward_list operations
+        void splice_after(const_iterator position, forward_list& x);
+        void splice_after(const_iterator position, forward_list&& x);
+        void splice_after(const_iterator position, forward_list& x, const_iterator i);
+        void splice_after(const_iterator position, forward_list&& x, const_iterator i);
+        void splice_after(const_iterator position, forward_list& x,
+                        const_iterator first, const_iterator last);
+        void splice_after(const_iterator position, forward_list&& x,
+                        const_iterator first, const_iterator last);
+        
+        size_type remove(const T& value);
+        template<class Predicate> size_type remove_if(Predicate pred);
+
+        size_type unique();
+        template<class BinaryPredicate> size_type unique(BinaryPredicate binary_pred);
+ 
+        void merge(forward_list& x);
+        void merge(forward_list&& x);
+        template<class Compare> void merge(forward_list& x, Compare comp);
+        template<class Compare> void merge(forward_list&& x, Compare comp)
+
+        void sort();
+        template<class Compare> void sort(Compare comp);
+ 
+        void reverse();
     };
-}
+    
+    // BEGIN IMPLEMENTATION
+    
+} // end namespace std
+
+#endif

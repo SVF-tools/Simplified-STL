@@ -1,47 +1,37 @@
-template <typename T>
-class queue {
-private:
-    T val[200];
-    T frnt;
-public:
+#ifndef QUEUE_H_
+#define QUEUE_H_
 
-    struct iterator
-    {
-        using value_type = T;
-        using pointer = T; 
-        using reference = T&;
-
-        iterator(pointer ptr) : m_ptr(ptr) {}
-
-        pointer operator->() { return m_ptr; }
-        reference operator*() {return m_ptr; }
-
+namespace std{
+    template <typename T>
+    class queue {
     private:
 
-        pointer m_ptr;
-        
+    public:
+        // types
+        using value_type            = T;
+        using size_type             = size_t;
 
+        queue();
+        ~queue();
+        bool                empty() const;
+        size_type           size() const;
+        value_type&         front();
+        const value_type&   front() const;
+        value_type&         back();
+        const value_type&   back() const;
+        void                push(const value_type& val);
+        template<class... Args>
+        void                emplace(Args&&... args);
+        void                pop();
+        void                swap(queue& x);
     };
 
-    iterator begin() { return iterator(val[0]); }
+    /* BEGIN IMPLEMENTATION */
 
-    queue() {
-
-    }
-
-    void push(T a){
-      
-    }
-
-    void pop(){
-        
-    }
-
-    T &front() {   
-      return frnt;
-    }
-
-private:
+    // constructor/destructor
 
 
-};
+} // end namespace std
+
+
+#endif
