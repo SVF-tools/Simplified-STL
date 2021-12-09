@@ -9,10 +9,10 @@ To compile a C++ file into its LLVM IR, use the following command line argument
 clang++ -S -c -emit-llvm ./basic_cpp_tests/forward_list-1.cpp -o check.ll
 ```
 
-To compile a C++ file into its LLVM IR using a simplified version of the C++ Standard Library, use the -I clang flag
+To compile a C++ file into its LLVM IR using our Simplified C++ STL, use the -I clang flag
 
 ```
-clang++ -S -c -emit-llvm -IreplaceSTL ./basic_cpp_tests/forward_list-1.cpp -o check.ll
+clang++ -S -c -emit-llvm -Isimplestl ./basic_cpp_tests/forward_list-1.cpp -o check.ll
 ```
 ## Compiling whole program
 ```
