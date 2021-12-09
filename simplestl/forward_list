@@ -5,7 +5,7 @@ namespace std {
     template <typename T>
     class forward_list {
     private:
-
+        
     public:
         using value_type        = T;
         using reference         = value_type&;

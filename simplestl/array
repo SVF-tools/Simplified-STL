@@ -4,6 +4,9 @@
 namespace std{
     template <typename T, unsigned int N>
     class array {
+        private:
+            size_t size;
+            T* array;
         public:
             using value_type            = T;
             using pointer               = T*;
@@ -56,9 +59,6 @@ namespace std{
             void fill (const value_type& val);
             void swap (array&); 
 
-        private:
-            size_t size;
-            T* array;
     };
 
     // BEGIN IMPLEMENTATION
