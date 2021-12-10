@@ -106,7 +106,7 @@ We aim to implement the set class as a BST
 
 ## TODO
 - [X]  deque declaration
-    - [] deque implementations (in prog)
+    - [ ] deque implementations (in prog)
 - [X]  array declaration
 - [X]  forward_list declaration
 - [X]  list declaration
