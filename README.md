@@ -105,15 +105,26 @@ We aim to implement the set class as a BST
 
 
 ## TODO
+- [X]  vector declaration
+    - [ ] vector implementations (in prog)
 - [X]  deque declaration
     - [ ] deque implementations (in prog)
 - [X]  array declaration
+    - [ ] array implementations (in prog)
 - [X]  forward_list declaration
+    - [ ] forward_list implementations (in prog)
 - [X]  list declaration
+    - [ ] list implementations (in prog)
 - [X]  map declaration
+    - [ ] map implementations (in prog)
 - [X]  queue declaration
+    - [ ] queue implementations (in prog)
 - [X]  set declaration
+    - [ ] set implementations (in prog)
 - [X]  stack declaration
+    - [ ] stack implementations (in prog)
 - [X]  unordered_map declaration
+    - [ ] unordered_map implementations (in prog)
 - [X]  unordered_set declaration
-- [X]  vector declaration
+    - [ ] unordered_set implementations (in prog)
+
