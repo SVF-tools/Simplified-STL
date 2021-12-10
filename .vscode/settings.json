@@ -15,6 +15,13 @@
         "queue": "cpp",
         "stack": "cpp",
         "iterator": "cpp",
-        "*.tcc": "cpp"
+        "*.tcc": "cpp",
+        "redblacktree": "cpp",
+        "cstdio": "cpp",
+        "atomic": "cpp",
+        "memory_resource": "cpp",
+        "optional": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp"
     }
 }

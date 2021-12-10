@@ -1,0 +1,359 @@
+#pragma once
+#include <cstdlib>
+
+
+namespace std{ 
+    template<class T> class redblacktree{
+        
+
+        public:
+
+            struct redblacknode
+            {
+                T data;
+                char colour;
+                struct redblacknode *left, *right, *parent;
+            };
+
+            struct redblacknode *ROOT;
+            struct redblacknode *NILL;
+
+            
+            redblacktree();
+            
+            
+            void leftRotate(struct redblacknode *n);
+            void rightRotate(struct redblacknode *n);
+            void insert(T k);
+            
+            struct redblacknode *search(T z);
+            struct redblacknode *minimum(struct redblacknode *x);
+            void transplant(struct redblacknode *x, struct redblacknode *y);
+            void rb_delete(struct redblacknode *z);
+            void delete_fixup(struct redblacknode *x);
+        
+    };
+
+    template<class T>
+    redblacktree<T>::redblacktree(){
+        NILL = new struct redblacktree<T>::redblacknode();
+        NILL->colour = 'b';
+        ROOT = NILL;
+    }
+
+    
+
+    template<class T>
+    inline void redblacktree<T>::leftRotate(struct redblacktree<T>::redblacknode *n){
+        struct redblacktree<T>::redblacknode *y = n->right;
+        
+        n->right = y->left;
+        if(n->right != NILL){
+            n->right->parent = n;
+        }
+        
+        y->parent = n->parent;
+        if(n->parent == NILL){
+            ROOT = y;
+        }
+        else if(n == n->parent->left){
+            n->parent->left = y;
+        }
+        else{
+            n->parent->right = y;
+        }
+
+        y->left = n;
+        n->parent = y;
+    }
+
+    template<class T>
+    inline void redblacktree<T>::rightRotate(struct redblacktree<T>::redblacknode *n){
+        struct redblacktree<T>::redblacknode *y = n->left;
+
+        n->left = y->right;
+        if(n->left != NILL){
+            n->left->parent = n;
+        }
+
+        y->parent = n->parent;
+        if(n->parent == NILL){
+            ROOT = y;
+        }
+        else if(n == n->parent->left){
+            n->parent->left = y;
+        }
+        else{
+            n->parent->right = y;
+        }
+
+        y->right = n;
+        n->parent = y;
+    }
+
+    template<class T> 
+    inline void redblacktree<T>::insert(T k){
+        struct redblacktree<T>::redblacknode *z = new struct redblacktree<T>::redblacknode();
+        z->colour = 'r';
+        z->data = k;
+        z->left = z->right = z->parent = NILL;
+
+        if(ROOT == NILL){
+            ROOT = z;
+            z->colour = 'b';
+        }
+        else{
+            struct redblacktree<T>::redblacknode *y = NILL;
+            struct redblacktree<T>::redblacknode *x = ROOT;
+            while(x != NILL){
+                y=x;
+                if(k < x->data){
+                    x = x->left;
+                }
+                else{
+                    x = x->right;
+                }
+            }
+            z->parent = y;
+            if(k < y->data){
+                y->left = z;
+            }
+            else{
+                y->right = z;
+            }
+
+        }
+
+        //check if the tree is fucked
+        if(z->parent->colour == 'r'){
+            if(z->parent->parent->left == z->parent){
+                if(z->parent->parent->right->colour == 'r'){
+                    //recolour 
+                    //uncle
+                    z->parent->parent->right->colour = 'b';
+                    //parent
+                    z->parent->colour = 'b';
+                    //grandparent
+                    z->parent->parent->colour = z->parent->parent->colour == 'b' ? 'r' : 'b';
+                    if(z->parent->parent == ROOT){
+                        z->parent->parent->colour = 'b';
+                    }
+                }
+                else{
+                    if(z->parent->left == z){
+                        //straight black line left 
+                        if(z->parent->parent == ROOT){
+                            z->parent->colour = 'b';
+                            z->parent->parent->colour = 'r';
+                        }
+                        else{
+                            z->parent->parent->colour = z->parent->parent->colour == 'b' ? 'r' : 'b';
+                            z->parent->colour = 'b';                       
+                        }
+                        rightRotate(z->parent->parent);
+                    }
+                    else{
+                        //triangle black left
+                        z->parent->colour = 'b';
+                        leftRotate(z->parent);
+                    }
+                } 
+            }
+            else{
+                if(z->parent->parent->left->colour == 'r'){
+                    //recolour 
+                    //uncle
+                    z->parent->parent->left->colour = 'b';
+                    //parent
+                    z->parent->colour = 'b';
+                    //grandparent
+                    z->parent->parent->colour = z->parent->parent->colour == 'b' ? 'r' : 'b';
+                    if(z->parent->parent == ROOT){
+                        z->parent->parent->colour = 'b';
+                    }
+                }
+                else{
+                    if(z->parent->right == z){
+                        //straight black line right
+                        if(z->parent->parent == ROOT){
+                            z->parent->colour = 'b';
+                            z->parent->parent->colour = 'r';
+                        }
+                        else{
+                            z->parent->parent->colour = z->parent->parent->colour == 'b' ? 'r' : 'b';
+                            z->parent->colour = 'b';                     
+                        }
+                        leftRotate(z->parent->parent);
+                    }
+                    else{
+                        z->parent->colour = 'r';
+                        rightRotate(z->parent);
+                    }
+                }
+            }
+        }
+    }
+
+    template<class T>
+    inline struct redblacktree<T>::redblacknode *redblacktree<T>::search(T z){
+        struct redblacktree<T>::redblacknode *ans = NILL;
+        struct redblacktree<T>::redblacknode *x = ROOT;
+
+        while(x != NILL){
+            if(x->data == z){
+                ans = x;
+            }
+            else if(x->data < z){
+                x = x->right;
+            }
+            else{
+                x = x->left;
+            }
+        }
+
+        return ans;
+    }
+
+    template<class T>
+    inline struct redblacktree<T>::redblacknode *redblacktree<T>::minimum(struct redblacktree<T>::redblacknode *x){
+        while(x->left != NILL){
+            x = x->left;
+        }
+        return x;
+    }
+
+    template<class T>
+    inline void redblacktree<T>::transplant(struct redblacktree<T>::redblacknode *x, struct redblacktree<T>::redblacknode *y){
+        if(x->parent == NILL){
+		    ROOT = y;
+        }
+        else if(x == x->parent->left){
+            x->parent->left = y;
+        }
+        else{
+            x->parent->right = y;
+        }
+
+        y->parent = x->parent;
+        
+    }
+
+    template<class T>
+    inline void redblacktree<T>::rb_delete(struct redblacktree<T>::redblacknode *z){
+        struct  redblacktree<T>::redblacknode *y, *x;
+        char yOriginalColor;
+
+        y = z;
+        yOriginalColor = y->colour;
+
+        if(z->left == NILL){
+            x = z->right;
+            transplant(z, z->right);
+        }
+        else if(z->right == NILL){
+            x = z->left;
+            transplant(z, z->left);
+        }
+        else{
+            y = minimum(z->right);
+            yOriginalColor = y->colour;
+
+            x = y->right;
+
+            if(y->parent == z){
+                x->parent = y;
+            }
+            else{
+                transplant(y, y->right);
+                y->right = z->right;
+                y->right->parent = y;
+            }
+
+            transplant(z, y);
+            y->left = z->left;
+            y->left->parent = y;
+            y->colour = z->colour;
+        }
+
+        if(yOriginalColor == 'b'){
+            delete_fixup(x);
+        }
+    }
+
+    template<class T>
+    inline void redblacktree<T>::delete_fixup(struct redblacktree<T>::redblacknode *x){
+        struct redblacktree<T>::redblacknode *w;	
+
+        while(x != ROOT && x->colour == 'b'){
+            
+            if(x == x->parent->left){
+                w = x->parent->right;
+
+                if(w->colour == 'r'){
+                    w->colour = 'b';
+                    x->parent->colour = 'r';
+                    leftRotate(x->parent);
+                    w = x->parent->right;
+                }
+
+                if(w->left->colour == 'b' && w->right->colour == 'b'){
+                    w->colour = 'r';
+                    x->parent->colour = 'b';
+                    x = x->parent;
+                }
+                else{
+
+                    if(w->right->colour == 'b'){
+                        w->colour = 'r';
+                        w->left->colour = 'b';
+                        rightRotate(w);
+                        w = x->parent->right;
+                    }
+
+                    w->colour = x->parent->colour;
+                    x->parent->colour = 'b';
+                    x->right->colour = 'b';
+                    leftRotate(x->parent);
+                    x = ROOT;		
+
+                }
+
+            }
+            else{
+                w = x->parent->left;
+
+                if(w->colour == 'r'){
+                    w->colour = 'b';
+                    x->parent->colour = 'b';
+                    rightRotate(x->parent);
+                    w = x->parent->left;
+                }
+
+                if(w->left->colour == 'b' && w->right->colour == 'b'){
+                    w->colour = 'r';
+                    x->parent->colour = 'b';
+                    x = x->parent;
+                }
+                else{
+
+                    if(w->left->colour == 'b'){
+                        w->colour = 'r';
+                        w->right->colour = 'b';
+                        leftRotate(w);
+                        w = x->parent->left;
+                    }
+
+                    w->colour = x->parent->colour;
+                    x->parent->colour = 'b';
+                    w->left->colour = 'b';
+                    rightRotate(x->parent);
+                    x = ROOT;
+
+                }
+            }
+
+        }
+
+        x->colour = 'b';
+    }
+}

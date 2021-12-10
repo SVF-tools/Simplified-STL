@@ -1,80 +1,67 @@
 #ifndef SET_H_
 #define SET_H_
-
+#include <redblacktree>
 namespace std{
-    template <typename T>
-    class set {
+    template <class T>
+    class set : public redblacktree<T> {
     private:
+        redblacktree<T> *rtree;
 
-        T val;
+
     public:
 
         // types
-        using key_type          = Key;
-        using value_type        = Key;
+        using key_type          = T;
+        using value_type        = T;
         using reference         = value_type&;
         using const_reference   = const value_type&;
         using size_type         = size_t;
+        using node_type         = typename redblacktree<T>::redblacknode;
 
         // construct/copy/destroy
+        set();
+
 
         // iterators
-        iterator               begin();
-        const_iterator         begin() const;
+        class const_iterator;
+        class iterator;
+        class const_reverse_iterator;
+        class reverse_iterator;
+        
+
+        iterator               begin(); 
         iterator               end();
-        const_iterator         end() const;
-    
         reverse_iterator       rbegin();
-        const_reverse_iterator rbegin() const;
         reverse_iterator       rend();
-        const_reverse_iterator rend() const;
+        const_iterator         cbegin();
+        const_iterator         cend();
+        const_reverse_iterator crbegin();
+        const_reverse_iterator crend();
     
-        const_iterator         cbegin() const;
-        const_iterator         cend() const;
-        const_reverse_iterator crbegin() const;
-        const_reverse_iterator crend() const;
+        
 
         // capacity
-        bool empty() const;
+        bool empty();
         size_type size() const;
         size_type max_size() const;
 
         // modifiers
-        template<class... Args> pair<iterator, bool> emplace(Args&&... args);
-        template<class... Args> iterator emplace_hint(const_iterator position, Args&&... args);
         pair<iterator,bool> insert(const value_type& x);
         pair<iterator,bool> insert(value_type&& x);
         iterator insert(const_iterator position, const value_type& x);
         iterator insert(const_iterator position, value_type&& x);
         template<class InputIt>
-        void insert(InputIt first, InputIt last);
+            void insert(InputIt first, InputIt last);
         void insert(initializer_list<value_type>);
-
-        node_type extract(const_iterator position);
-        node_type extract(const key_type& x);
-        template<class K> node_type extract(K&& x);
-
-        insert_return_type insert(node_type&& nh);
-        iterator           insert(const_iterator hint, node_type&& nh);
-
-        iterator  erase(iterator position);
         iterator  erase(const_iterator position);
-        size_type erase(const key_type& x);
-        template<class K> size_type erase(K&& x);
+        size_type erase(const value_type& x);
         iterator  erase(const_iterator first, const_iterator last);
-        void      swap(set&)
-        noexcept(allocator_traits<Allocator>::is_always_equal::value &&
-                is_nothrow_swappable_v<Compare>);
+        void      swap(set& x);
         void      clear() noexcept;
-
-        template<class C2>
-        void merge(set<Key, C2, Allocator>& source);
-        template<class C2>
-        void merge(set<Key, C2, Allocator>&& source);
-        template<class C2>
-        void merge(multiset<Key, C2, Allocator>& source);
-        template<class C2>
-        void merge(multiset<Key, C2, Allocator>&& source);
+        template<class... Args> 
+            pair<iterator, bool> emplace(Args&&... args);
+        template<class... Args> 
+            iterator emplace_hint(const_iterator position, Args&&... args);
 
         // set operations
         iterator       find(const key_type& x);
@@ -104,6 +91,15 @@ namespace std{
         pair<iterator, iterator>             equal_range(const K& x);
         template<class K>
         pair<const_iterator, const_iterator> equal_range(const K& x) const;
+    };
+
+    template<class T> class set<T>::const_iterator{
+
+        const_iterator(node_type* n): _curr(n){}
+        
+        private:
+        node_type* _curr;
+
     };
 }
 
