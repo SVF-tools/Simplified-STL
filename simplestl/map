@@ -1,25 +1,20 @@
 #include <utility>
-#include <vector>
+
 #ifndef MAP_H
 #define MAP_H
 
 namespace std{
     template<class Key, class T>
     class map {
-        private:
-            int capacity;
-            int current;
-            vector<pair<Key, T>> values;
         public:
             using key_type      = Key;
             using mapped_type   = T;
-            using size_type     = int;
 
             struct const_iterator
             {
-                using value_type = std::pair<Key, T>;
-                using pointer = std::pair<Key, T>; 
-                using reference = std::pair<Key, T>&;
+                using value_type = std::pair<K, V>;
+                using pointer = std::pair<K, V>; 
+                using reference = std::pair<K, V>&;
 
                 const_iterator(pointer ptr) : m_ptr(ptr) {}
 
@@ -27,7 +22,7 @@ namespace std{
 
                 private:
                 pointer m_ptr;
-            };
+            }
 
             // capacity
             bool empty() { return current == 0; }
@@ -38,22 +33,11 @@ namespace std{
             mapped_type& operator[] (const key_type& x) {}
             mapped_type& operator[] (key_type& x) {}
             mapped_type&            at(const key_type& x) {}
-            const mapped_type&      at(const key_type& x) const {}
-
-            //modifiers
-            void insert(pair<Key, T> p);
-            const_iterator begin();
+            const mapped_type&      at(const key_type& x) {}
+        private:
+            int capacity;
+            int current;
     }; // end map class
-
-    template<class Key, class T>
-    void map<Key, T>::insert(pair<Key, T> p) {
-
-    }
-
-    template<class Key, class T>
-    typename map<Key, T>::const_iterator map<Key, T>::begin(){
-        return map<Key, T>::const_iterator(values[0]);
-    }
 
 } // end namespace std
 

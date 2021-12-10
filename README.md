@@ -1,7 +1,7 @@
 # Simplified C++ STL
 
 A simplified version of the C++
-Standard Library in aims of achieving a shorter, simpler LLVM IR to allow for a more efficient static software analysis.
+Standard Library in aims of achieving a shorter, simpler LLVM IR to allow for a more efficient static software analysis of single files or of a whole program.
 
 ## Compiling C++ files into IR
 To compile a C++ file into its LLVM IR, use the following command line argument
@@ -9,16 +9,17 @@ To compile a C++ file into its LLVM IR, use the following command line argument
 clang++ -S -c -emit-llvm ./basic_cpp_tests/forward_list-1.cpp -o check.ll
 ```
 
-To compile a C++ file into its LLVM IR using a simplified version of the C++ Standard Library, use the -I clang flag
+To compile a C++ file into its LLVM IR using our Simplified C++ STL, use the -I clang flag
 
 ```
-clang++ -S -c -emit-llvm -IreplaceSTL ./basic_cpp_tests/forward_list-1.cpp -o check.ll
+clang++ -S -c -emit-llvm -Isimplestl ./basic_cpp_tests/forward_list-1.cpp -o check.ll
 ```
 ## Compiling whole program
 ```
+install wllvm, see: https://github.com/banach-space/llvm-tutor
 1) export LLVM_DIR=/usr/lib/llvm-12       (or whatever your path to llvm is)
 2) export LLVM_COMPILER=clang
-3) make CXX=wllvm++ CXX_FLAGS="<old flags> -IreplacerIncludes" [OR] cmake CMAKE_C_COMPILER=wllvm++ CMAKE_CXX_COMPILER=wllvm++ CMAKE_CXX_FLAGS="<old flags> -IreplacerIncludes" (depending on type of project c/c++) 
+3) make CXX=wllvm++ CXX_FLAGS="<old flags> -Isimplestl" [OR] cmake CMAKE_C_COMPILER=wllvm++ CMAKE_CXX_COMPILER=wllvm++ CMAKE_CXX_FLAGS="<old flags> -Isimplestl" (depending on type of project c/c++) 
 [IMPORTANT: please redeclare your old flags in the <old flags> part as the flags stated within the make file will be overwritten] 
 {the cmake command is untested we need to test it later}
 4) extract-bc <path to executable file created in step 2> -l$LLVM_DIR/bin/llvm-link
