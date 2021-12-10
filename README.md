@@ -102,7 +102,7 @@ We aim to implement the set class as a BST
 ### Unordered_Set
 
 ### Iterators
-
+Iterators are implemented to avoid code redundancy
 
 ## TODO
 - [X]  vector declaration
