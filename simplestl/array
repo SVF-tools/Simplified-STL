@@ -1,3 +1,6 @@
+#include "iterator.h"
+#include "reverse_iterator.h"
+
 #ifndef ARRAY_H_
 #define ARRAY_H_
 
@@ -14,14 +17,13 @@ namespace std{
             using reference             = T&;
             using const_reference       = const T&;
             using size_type             = size_t;
-            
-            struct iterator{
 
-            };
+            // iterator typedefs
+            typedef iterator_base<T>            iterator;
+            typedef const iterator_base<T>      const_iterator;
 
-            struct const_iterator{
-
-            };
+            typedef reverse_iterator_base<T>         reverse_iterator;
+            typedef const reverse_iterator_base<T>   const_reverse_iterator;
 
             // iterators
             iterator               begin();

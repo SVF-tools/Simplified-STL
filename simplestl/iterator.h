@@ -1,16 +1,16 @@
 // iterator with random access
 
-template<typename DataType>
+template<typename blDataType>
 class iterator_base
 {
 public:
-    using value_type        = DataType;
-    using pointer           = DataType*;
-    using reference         = DataType&;
+    using value_type        = blDataType;
+    using pointer           = blDataType*;
+    using reference         = blDataType&;
     using difference_type   = std::ptrdiff_t;
 
     iterator_base(pointer ptr) : m_ptr(ptr) {}
-    iterator_base(const iterator_base<DataType>& rawIterator) = default;
+    iterator_base(const iterator_base<blDataType>& rawIterator) = default;
     ~iterator_base() {}
 
     iterator_base<blDataType>&                  operator=(const iterator_base<blDataType>& rawIterator) = default;
@@ -47,6 +47,6 @@ public:
 
 
 protected:
-    DataType*       m_ptr;
+    blDataType*       m_ptr;
 
 };
