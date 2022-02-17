@@ -1,51 +1,38 @@
-#pragma once
+/*
+    The list class, part of the C++ STL, implements a double-linked list
+*/
+
+#include "iterator.h"
+#include "DNode.h"
+
+#ifndef _LIST_H
+#define _LIST_H
 
 namespace std {
     template<class T>
     class list {
+        private:
+            typedef struct DNode* DNode*;
+
+            DNode* head;        // A reference to the head of the list
+            DNode* tail;        // A reference to the end of the list
+            int num_items;      // The size of the list
+
         public:
             using value_type        = T;
             using reference         = value_type&;
             using const_reference   = const value_type&;
             using size_type         = size_t;
 
-            struct iterator 
-            {
-            /* ITERATOR PROPERTIES */
-            // using iterator_category = std::forward_iterator_tag;
-            // using difference_type   = std::ptrdiff_t;
-            using value_type        = T;            // the type the iterator iterates over
-            using pointer           = value_type*;  // Defines a pointer to the type iterated over
-            using reference         = value_type&;  // Defines a reference to the type iterated over
-            iterator(pointer ptr) : m_ptr(ptr) {}
-
-            reference operator*() const { return *m_ptr; }
-            pointer operator->() { return m_ptr; }
-
-            private:
-                pointer m_ptr;
-            };
-
-            struct const_iterator
-            {
-                using value_type = T;
-                using pointer = T; 
-                using reference = T&;
-
-                const_iterator(pointer ptr) : m_ptr(ptr) {}
-
-                pointer operator->() { return m_ptr; }
-                reference operator*() {return m_ptr; }
-
-                private:
-                    pointer m_ptr;
-            };
+            // iterator typedefs
+            typedef iterator_base<T>            iterator;
+            typedef const iterator_base<T>      const_iterator;
 
             /* construct/copy/destroy */
-
-            forward_list(const forward_list& x);
-            forward_list(forward_list&& x);
-            ~forward_list();
+            list();
+            list(const list& x);
+            list(forward_list&& x);
+            list();
 
 
             /* iterators*/
@@ -81,15 +68,19 @@ namespace std {
             iterator insert_after(const_iterator position, InputIt first, InputIt last);
             iterator insert_after(const_iterator position, initializer_list<T> il);
 
-        private:
-            T* arr;
-            T frnt;
-            unsigned int capacity;
-            unsigned int current;
     }; // end list class
 
 
-// begin implementation
+/* begin implementation */
+
+/* construct/copy/destory */
+template<class T>
+list<T>::list()
+{
+    head = nullptr;
+    tail = nullptr;
+    num_items = 0;
+}
 
 /* modifiers */
 template<class T>
@@ -104,5 +95,6 @@ void list<T>::pop_front(){ }
 
 } // end namespace std
 
+#endif
 
 

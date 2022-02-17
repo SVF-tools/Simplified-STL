@@ -79,8 +79,19 @@ We aim to implement the queue using the custom list as our underlying data struc
 The forward list class will be implemented as a singly-linked list using a custom forward_list node data structure
 
 ### List
-The list class will be implemented as a doubly-linked list using a custom list node data structure
+The list class will be implemented as a doubly-linked list using a custom list node data structure that contains a reference to the next and previous node
+```
+#include "DNode.h"
+namespace std {
+    template<class T>
+    class list {
+        private:
+            typedef struct DNode* DNode*;
 
+            DNode* head;        // A reference to the head of the list
+            DNode* tail;        // A reference to the end of the list
+            int num_items;      // The size of the list
+```
 ### Map
 
 ### Unordered Map
@@ -91,17 +102,29 @@ We aim to implement the set class as a BST
 ### Unordered_Set
 
 ### Iterators
-
+Iterators are implemented to avoid code redundancy
 
 ## TODO
-- [ ]  deque
-- [ ]  array
-- [ ]  forward_list
-- [ ]  list
-- [ ]  map
-- [ ]  queue
-- [ ]  set
-- [ ]  stack
-- [ ]  unordered_map
-- [ ]  unordered_set
-- [ ]  vector
+- [X]  vector declaration
+    - [ ] vector implementations (in prog)
+- [X]  deque declaration
+    - [ ] deque implementations (in prog)
+- [X]  array declaration
+    - [ ] array implementations (in prog)
+- [X]  forward_list declaration
+    - [ ] forward_list implementations (in prog)
+- [X]  list declaration
+    - [ ] list implementations (in prog)
+- [X]  map declaration
+    - [ ] map implementations (in prog)
+- [X]  queue declaration
+    - [ ] queue implementations (in prog)
+- [X]  set declaration
+    - [ ] set implementations (in prog)
+- [X]  stack declaration
+    - [ ] stack implementations (in prog)
+- [X]  unordered_map declaration
+    - [ ] unordered_map implementations (in prog)
+- [X]  unordered_set declaration
+    - [ ] unordered_set implementations (in prog)
+

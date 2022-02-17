@@ -24,7 +24,11 @@ namespace std{
             typedef const iterator_base<T>      const_iterator;
 
             typedef reverse_iterator_base<T>         reverse_iterator;
+<<<<<<< HEAD
             typedef reverse_iterator_base<const T>   const_reverse_iterator;
+=======
+            typedef const reverse_iterator_base<T>   const_reverse_iterator;
+>>>>>>> cbf8f86e9718249e7171d9e19ed6e31c4032f3c3
 
 
             /* construct/copy/destroy */

@@ -1,3 +1,7 @@
+/*
+    Forward lists are implemented as singly linked lists
+*/
+
 #ifndef FORWARD_LIST_H_
 #define FORWARD_LIST_H_
 
