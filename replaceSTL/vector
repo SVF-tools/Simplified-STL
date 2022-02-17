@@ -1,0 +1,55 @@
+#include <algorithm>
+#include <iostream>
+using namespace std;
+
+#define SIZE 1000
+
+template<typename T>
+class vector
+{
+    T *p;
+    int size;
+    int capacity;
+
+    public:
+
+    class const_iterator{
+        public:
+        const_iterator(T ptr) : my_ptr(ptr){
+
+        }
+        
+        const T& operator*(){
+            
+            return my_ptr;
+        }
+
+        protected:
+        T my_ptr;
+    };
+
+    vector(int sz = SIZE){
+        capacity = sz;
+        size = 0;
+        p = new T[sz];
+    }
+
+    ~vector(){
+        delete[] p;
+    }
+
+    void push_back(T d){
+        p[size] = d;
+        size++;
+    }
+
+    T& operator[](int spot){
+        return p[spot];
+    }
+
+    const_iterator begin(){
+        return const_iterator(p[0]);
+    }
+    
+
+};

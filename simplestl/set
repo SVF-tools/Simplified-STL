@@ -1,15 +1,17 @@
 #ifndef SET_H_
 #define SET_H_
 #include <redblacktree>
+#include "iterator.h"
+#include "reverse_iterator.h"
 namespace std{
     template <class T>
     class set : public redblacktree<T> {
     private:
-        redblacktree<T> *rtree;
+        
 
 
     public:
-
+        
         // types
         using key_type          = T;
         using value_type        = T;
@@ -23,12 +25,13 @@ namespace std{
 
 
         // iterators
-        class const_iterator;
-        class iterator;
-        class const_reverse_iterator;
-        class reverse_iterator;
-        
+        typedef iterator_base<typename redblacktree<T>::redblacknode>            iterator;
+        typedef const iterator_base<typename redblacktree<T>::redblacknode>      const_iterator;
 
+        typedef reverse_iterator_base<typename redblacktree<T>::redblacknode>         reverse_iterator;
+        typedef const reverse_iterator_base<typename redblacktree<T>::redblacknode>   const_reverse_iterator;
+        
+        
         iterator               begin(); 
         iterator               end();
         reverse_iterator       rbegin();
@@ -93,14 +96,23 @@ namespace std{
         pair<const_iterator, const_iterator> equal_range(const K& x) const;
     };
 
-    template<class T> class set<T>::const_iterator{
-
-        const_iterator(node_type* n): _curr(n){}
+    template<class T>
+    set<T>::set(){
         
-        private:
-        node_type* _curr;
+    }
 
-    };
+    template<class T>
+    pair<typename set<T>::iterator, bool> insert(typename set<T>::value_type&& x){
+        typename set<T>::iterator it = insert(x);
+        pair<typename set<T>::iterator, bool> result = make_pair(it, false);
+        return result;
+    }
+
+    template<class T>
+    iterator<T> begin(){
+        return iterator<T>(getroot());
+    }
+
 }
 
 #endif

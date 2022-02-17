@@ -1,0 +1,64 @@
+#include <algorithm>
+#include <iostream>
+using namespace std;
+
+#define SIZE 1000
+
+template<typename T>
+class queue{
+    T *p;
+    int capacity;
+    int frnt;
+    int rear;
+    int count;
+
+    public:
+    queue(int size = SIZE){
+        p = new T[size];
+        capacity = size;
+        frnt = 0;
+        rear = -1;
+        count = 0;
+    }
+
+    ~queue(){
+        delete[] p;
+    }
+
+    void push(T d){
+        if(isFull()){
+            exit(EXIT_FAILURE);
+        }
+
+        rear = (rear + 1) % capacity;
+        p[rear] = d;
+        count++;
+    }
+
+    T& front(){
+        return p[frnt];
+    }
+
+    T& pop(){
+        if (isEmpty())
+        {
+            exit(EXIT_FAILURE);
+        }
+    
+        int f = frnt;
+        
+    
+        frnt = (frnt + 1) % capacity;
+        count--;
+    
+        return p[f];
+    }
+
+    bool isEmpty(){
+        return count == 0;
+    }
+
+    bool isFull(){
+        return count = capacity;
+    }
+};

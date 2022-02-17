@@ -1,11 +1,11 @@
 #pragma once
 #include <cstdlib>
 
-
 namespace std{ 
+
+
     template<class T> class redblacktree{
         
-
         public:
 
             struct redblacknode
@@ -13,6 +13,11 @@ namespace std{
                 T data;
                 char colour;
                 struct redblacknode *left, *right, *parent;
+
+                redblacknode() : data(0){
+                    
+                }
+
             };
 
             struct redblacknode *ROOT;
@@ -26,6 +31,7 @@ namespace std{
             void rightRotate(struct redblacknode *n);
             void insert(T k);
             
+            struct redblacknode *getroot();
             struct redblacknode *search(T z);
             struct redblacknode *minimum(struct redblacknode *x);
             void transplant(struct redblacknode *x, struct redblacknode *y);
@@ -36,7 +42,8 @@ namespace std{
 
     template<class T>
     redblacktree<T>::redblacktree(){
-        NILL = new struct redblacktree<T>::redblacknode();
+        struct redblacknode *NILL = new struct redblacktree<T>::redblacknode();
+        NILL->data = NULL;
         NILL->colour = 'b';
         ROOT = NILL;
     }
@@ -192,6 +199,11 @@ namespace std{
                 }
             }
         }
+    }
+
+    template<class T>
+    inline struct redblacktree<T>::redblacknode *redblacktree<T>::getroot(){
+        return ROOT;
     }
 
     template<class T>

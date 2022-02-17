@@ -1,0 +1,101 @@
+#include <algorithm>
+#include <iostream>
+using namespace std;
+
+template<typename Key, typename T>
+struct Node {
+    Key val;
+    T data;
+
+    Node* left;
+    Node* right;
+
+public:
+    Node(Key v, T d) : val(v) , data(d){
+        left = nullptr;
+        right = nullptr;
+    }
+
+    bool containsNode(Node* r, Key v){
+        if (r == NULL){
+            return false;
+        }
+
+        else if(v == r->val){
+            return true;
+        }
+
+        if(v < r->val){
+            return containsNode(r->left, v);
+        }
+        
+        if(v > r->val){
+            return containsNode(r->right, v);
+        }
+
+        return false;
+    }
+
+    Node* insert(Node* r, Key v, T d){
+        if(r == NULL){
+            Node<Key, T>* tmp = new Node(v, d);
+            tmp->val = v;
+            tmp->data = d;
+            tmp->left = tmp->right = NULL;
+            return tmp;
+        }
+
+        if(v < r->val){
+            r->left = insert(r->left, v, d);
+            return r;
+        }
+        else if(v > r->val){
+            r->right = insert(r->right, v, d);
+            return r;
+        }
+        else{
+            return r;
+        }
+    }
+
+};
+
+template<typename Key, typename T>
+class map{
+    Node<Key, T>* root;
+    int size;
+public:
+    
+    class const_iterator{
+        public:
+        const_iterator(Node<Key, T>* ptr) : my_ptr(ptr){
+
+        }
+
+        pair<Key, T>* operator->(){
+            pair<Key, T>* p;
+            p->first = my_ptr->val;
+            p->second = my_ptr->data;
+            return p;
+        }
+
+        protected:
+        Node<Key, T>* my_ptr;
+    };
+
+    map(){
+        root = NULL;
+        size = 0;
+    }
+
+    void insert(pair<Key, T> p){
+        if(!root->containsNode(root, p.first)){
+            root = root->insert(root, p.first, p.second);
+            size++;
+        }
+    }
+
+    const_iterator begin(){
+        return const_iterator(root);
+    }
+};

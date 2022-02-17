@@ -1,0 +1,65 @@
+#include <algorithm>
+#include <iostream>
+using namespace std;
+
+template<typename T>
+struct Node{
+    T data;
+    Node* next; 
+    Node() = default;
+    Node(T d) : data (d) {}
+};
+
+template<typename T>
+class forward_list
+{
+    Node<T>* m_head;
+    Node<T>* m_tail;
+    int m_size;
+
+    public:
+    class iterator{
+        public:
+        iterator(Node<T>* p) : my_ptr(p){
+
+        }
+
+        T& operator*(){
+            return my_ptr->data;
+        }
+
+        private:
+        Node<T>* my_ptr;
+    };
+
+    forward_list() : m_head(nullptr) , m_tail(nullptr) , m_size(0) {
+
+    }
+
+    ~forward_list() {
+            Node<T>* current_node = m_head;
+            while (current_node != nullptr) {
+                Node<T>* next_node = current_node->next;
+                delete current_node;
+                current_node = next_node;
+            }
+            m_head = nullptr;
+        }
+
+    void push_front(T d){
+        Node<T>* head_temp = m_head;
+        Node<T>* current = new Node<T>(d);
+        m_head = current;
+        m_head->next = head_temp;
+        ++m_size;
+    }
+
+    T& front(){
+        return m_head->data;
+    }
+
+    iterator begin(){
+        return iterator(m_head);
+    }
+
+};

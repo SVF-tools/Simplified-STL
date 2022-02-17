@@ -1,0 +1,53 @@
+#include <algorithm>
+#include <iostream>
+using namespace std;
+
+#define SIZE 10
+
+template<typename T>
+class stack{
+    T *p;
+    int m_top;
+    int capacity;
+
+    public:
+    stack(int size = SIZE){
+        p = new T[size];
+        m_top = -1;
+        capacity = size;
+    }
+
+    ~stack(){
+        delete[] p;
+    }
+
+    void push(T d){
+        if(isFull()){
+            exit(EXIT_FAILURE);
+        }
+        m_top++;
+        p[m_top] = d;
+    }
+
+    T& pop(){
+        if(isEmpty()){
+            exit(EXIT_FAILURE);
+        }
+        int t = m_top;
+        m_top--;
+        return p[t];
+    }
+
+    T& top(){
+        return p[m_top];
+    }
+
+    bool isEmpty(){
+        return m_top == -1;
+    }
+
+    bool isFull(){
+        return m_top == capacity-1;
+    }
+
+};

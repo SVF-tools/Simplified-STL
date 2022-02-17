@@ -1,0 +1,157 @@
+#include <algorithm>
+#include <iostream>
+using namespace std;
+
+template<typename T>
+class deque 
+{ 
+    T  *p; 
+    int  frnt; 
+    int  rear; 
+    int  size; 
+    
+    
+    public: 
+
+    class iterator{
+        public:
+        iterator(T ptr) : my_ptr(ptr){
+
+        }
+        
+        T operator*(){
+            
+            return my_ptr;
+        }
+
+        protected:
+        T my_ptr;
+    };
+
+    deque() { 
+        frnt = -1; 
+        rear = 0; 
+        size = 10;
+    } 
+        
+       
+    bool  isFull(){
+        return ((frnt == 0 && rear == size-1)||frnt == rear+1);    
+    } 
+        
+    bool  isEmpty(){
+        return (frnt == -1);  
+    }
+     
+    
+    // Insert an element at frnt of the deque
+    void push_back(T key) { 
+        if (isFull())  { 
+            cout << "Overflow!!\n" << endl; 
+            return; 
+        } 
+        
+        // If queue is initially empty,set frnt=rear=0; start of deque 
+        if (frnt == -1)  { 
+            frnt = 0; 
+            rear = 0; 
+        } 
+        else if (frnt == 0) {
+            frnt = size - 1 ; 
+        }// frnt is first position of queue 
+        else{
+            frnt = frnt-1;
+        } // decrement frnt 1 position 
+         
+        
+        p[frnt] = key ;            // insert current element into Deque
+    } 
+    
+    // insert element at the rear end of deque 
+    void insertrear(T key) { 
+        if (isFull()) { 
+            cout << " Overflow!!\n " << endl; 
+            return; 
+        } 
+        
+        //  If queue is initially empty,set frnt=rear=0; start of deque 
+        if (frnt == -1) { 
+            frnt = 0; 
+            rear = 0; 
+        } 
+        else if (rear == size-1) {
+            rear = 0;
+        }// rear is at last position of queue 
+        else {
+            rear = rear+1; 
+        }// increment rear by 1 position 
+         
+        p[rear] = key ;         // insert current element into Deque
+    } 
+    
+    // Delete element at frnt of Deque 
+    void deletefrnt() 
+    { 
+        if (isEmpty()) 
+        { 
+            cout << "Queue Underflow!!\n" << endl; 
+            return; 
+            } 
+        
+            // Deque has only one element 
+        if (frnt == rear) { 
+            frnt = -1; 
+            rear = -1; 
+        } 
+        else if (frnt == size -1){
+            frnt = 0;
+        } 
+        else {
+            frnt = frnt+1; 
+        } // remove current frnt value from Deque;increment frnt by 1  
+    } 
+    
+    // Delete element at rear end of Deque 
+    void deleterear() 
+    { 
+        if (isEmpty()) { 
+            cout << " Underflow!!\n" << endl; 
+            return; 
+        } 
+        
+        // Deque has only one element 
+        if (frnt == rear) { 
+            frnt = -1; 
+            rear = -1; 
+        } 
+        else if (rear == 0){
+            rear = size-1;
+        } 
+        else{
+            rear = rear-1; 
+        }
+        
+    } 
+    // retrieve frnt element of Deque 
+    T& front() { 
+        if (isEmpty()){ 
+            cout << " Underflow!!\n" << endl; 
+            return p[frnt]; 
+        } 
+        return p[frnt]; 
+    } 
+    
+    // retrieve rear element of Deque 
+    T getRear() 
+    { 
+        if(isEmpty() || rear == 0)  { 
+            cout << " Underflow!!\n" << endl; 
+            return -1 ; 
+        } 
+        return p[rear]; 
+    } 
+    
+    iterator begin(){
+        return iterator(p[frnt]);
+    }
+};

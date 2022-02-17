@@ -1,0 +1,31 @@
+#include <algorithm>
+#include <iostream>
+using namespace std;
+
+template <typename T, int S>
+class array{
+    T *p;
+    int size;
+
+    public:
+    array(){
+        size = S;
+        p = new T[S];
+    }
+
+    ~array(){
+        delete[] p;
+    }
+
+    T& operator[](int index){
+        return p[index];
+    }
+
+    T& front(){
+        return p[0];
+    }
+
+    T& back(){
+        return p[size];
+    }
+};

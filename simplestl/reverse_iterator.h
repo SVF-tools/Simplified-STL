@@ -6,6 +6,10 @@ template<typename DataType>
 class reverse_iterator_base : public iterator_base<DataType>
 {
     public:
+        using value_type        = DataType;
+        using pointer           = DataType*;
+        using reference         = DataType&;
+        using difference_type   = std::ptrdiff_t;
 
         reverse_iterator_base(DataType* ptr = nullptr):iterator_base<DataType>(ptr){}
         reverse_iterator_base(const iterator_base<DataType>& rawIterator){this->m_ptr = rawIterator.getPtr();}
