@@ -97,7 +97,7 @@ namespace std {
 ### Unordered Map
 
 ### Set
-We aim to implement the set class as a BST
+The set class is implemented as a Red-Black Tree
 
 ### Unordered_Set
 

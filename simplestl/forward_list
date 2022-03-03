@@ -2,6 +2,9 @@
     Forward lists are implemented as singly linked lists
 */
 
+#include "iterator.h"
+#include "Node.h"
+
 #ifndef FORWARD_LIST_H_
 #define FORWARD_LIST_H_
 
@@ -18,6 +21,9 @@ namespace std {
 
         // Constructor / Destructor
 
+        // Iterator typedefs
+        typedef iterator_base<T>            iterator;
+        typedef const iterator_base<T>      const_iterator;
 
         // Iterators
         iterator            before_begin();
