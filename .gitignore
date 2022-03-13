@@ -6,3 +6,5 @@
 *.s
 *.o
 cpp-project
+test.py
+foo.txt

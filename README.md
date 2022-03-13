@@ -14,18 +14,15 @@ To compile a C++ file into its LLVM IR using our Simplified C++ STL, use the -I 
 ```
 clang++ -S -c -emit-llvm -Isimplestl ./basic_cpp_tests/forward_list-1.cpp -o check.ll
 ```
-## Compiling whole program
+## Compiling whole program UPDATE
 ```
 install wllvm, see: https://github.com/banach-space/llvm-tutor
-1) export LLVM_DIR=/usr/lib/llvm-12       (or whatever your path to llvm is)
-2) export LLVM_COMPILER=clang
-3) make CXX=wllvm++ CXX_FLAGS="<old flags> -Isimplestl" [OR] cmake CMAKE_C_COMPILER=wllvm++ CMAKE_CXX_COMPILER=wllvm++ CMAKE_CXX_FLAGS="<old flags> -Isimplestl" (depending on type of project c/c++) 
-[IMPORTANT: please redeclare your old flags in the <old flags> part as the flags stated within the make file will be overwritten] 
-{the cmake command is untested we need to test it later}
-4) extract-bc <path to executable file created in step 2> -l$LLVM_DIR/bin/llvm-link
-5) llvm-dis <path to bc file created in step 3>
 
-This will achieve a human readable file for the whole program
+1) Run main.py
+2) Enter the link to your GitHub project
+3) Follow the steps by the program for the paths to necessary dependencies (Simplified-STL folder and LLVM folder)
+4) The resulting whole program bitcode file will be in the "build" folder named "result"
+
 ```
 
 ## References
