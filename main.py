@@ -28,7 +28,7 @@ os.chdir("build")
 
 # set up environment for wllvm
 os.environ["LLVM_COMPILER"] = "clang"
-os.system("CC=wllvm CXX=wllvm++ cmake ../extracted-files/")
+os.system("CC=wllvm CXX=wllvm++ cmake -DCMAKE_CXX_FLAGS=\"-IreplaceSTL\" ../extracted-files/")
 
 # save result of make command to a txt file as a preprocessing step
 os.system("make > makeOutput.txt")

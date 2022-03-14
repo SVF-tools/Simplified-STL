@@ -7,4 +7,4 @@
 *.o
 cpp-project
 test.py
-foo.txt
+*.txt
