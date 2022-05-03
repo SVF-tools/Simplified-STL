@@ -22,7 +22,7 @@ class list
     class const_iterator{
         public:
         const_iterator(Node<T>* p) : my_ptr(p){
-
+            
         }
 
         const T& operator*(){
@@ -56,12 +56,27 @@ class list
         ++m_size;
     }
 
+    //ELEMENT ACCESS
+
     T& front(){
         return m_head->data;
+    } 
+
+    T& back(){
+        return m_tail->data;
     }
+
+    //ITERATORS
 
     const_iterator begin(){
         return const_iterator(m_head);
     }
+
+    
+
+
+    
+
+
 
 };

@@ -1,157 +1,304 @@
 #include <algorithm>
 #include <iostream>
+#include <limits>
 using namespace std;
+
+template<typename T>
+struct Node{
+    T data;
+    Node* next; 
+    Node* prev;
+    Node() = default;
+    Node(T d) : data (d) {}
+};
 
 template<typename T>
 class deque 
 { 
-    T  *p; 
-    int  frnt; 
-    int  rear; 
-    int  size; 
+    Node<T>* m_head;
+    Node<T>* m_tail;
+    int m_size;
     
-    
+    //ITERATOR DECLARATION
     public: 
-
     class iterator{
         public:
-        iterator(T ptr) : my_ptr(ptr){
-
+        iterator(Node<T>* ptr) : my_ptr(ptr){
+            
         }
         
-        T operator*(){
-            
+        Node<T>* getNode(){
             return my_ptr;
         }
 
+        T& operator*(){
+            
+            return my_ptr->data;
+        }
+
         protected:
-        T my_ptr;
+        Node<T>* my_ptr;
     };
 
-    deque() { 
-        frnt = -1; 
-        rear = 0; 
-        size = 10;
-    } 
-        
-       
-    bool  isFull(){
-        return ((frnt == 0 && rear == size-1)||frnt == rear+1);    
-    } 
-        
-    bool  isEmpty(){
-        return (frnt == -1);  
-    }
-     
-    
-    // Insert an element at frnt of the deque
-    void push_back(T key) { 
-        if (isFull())  { 
-            cout << "Overflow!!\n" << endl; 
-            return; 
-        } 
-        
-        // If queue is initially empty,set frnt=rear=0; start of deque 
-        if (frnt == -1)  { 
-            frnt = 0; 
-            rear = 0; 
-        } 
-        else if (frnt == 0) {
-            frnt = size - 1 ; 
-        }// frnt is first position of queue 
-        else{
-            frnt = frnt-1;
-        } // decrement frnt 1 position 
-         
-        
-        p[frnt] = key ;            // insert current element into Deque
-    } 
-    
-    // insert element at the rear end of deque 
-    void insertrear(T key) { 
-        if (isFull()) { 
-            cout << " Overflow!!\n " << endl; 
-            return; 
-        } 
-        
-        //  If queue is initially empty,set frnt=rear=0; start of deque 
-        if (frnt == -1) { 
-            frnt = 0; 
-            rear = 0; 
-        } 
-        else if (rear == size-1) {
-            rear = 0;
-        }// rear is at last position of queue 
-        else {
-            rear = rear+1; 
-        }// increment rear by 1 position 
-         
-        p[rear] = key ;         // insert current element into Deque
-    } 
-    
-    // Delete element at frnt of Deque 
-    void deletefrnt() 
-    { 
-        if (isEmpty()) 
-        { 
-            cout << "Queue Underflow!!\n" << endl; 
-            return; 
-            } 
-        
-            // Deque has only one element 
-        if (frnt == rear) { 
-            frnt = -1; 
-            rear = -1; 
-        } 
-        else if (frnt == size -1){
-            frnt = 0;
-        } 
-        else {
-            frnt = frnt+1; 
-        } // remove current frnt value from Deque;increment frnt by 1  
-    } 
-    
-    // Delete element at rear end of Deque 
-    void deleterear() 
-    { 
-        if (isEmpty()) { 
-            cout << " Underflow!!\n" << endl; 
-            return; 
-        } 
-        
-        // Deque has only one element 
-        if (frnt == rear) { 
-            frnt = -1; 
-            rear = -1; 
-        } 
-        else if (rear == 0){
-            rear = size-1;
-        } 
-        else{
-            rear = rear-1; 
+    class reverse_iterator{
+        public:
+        reverse_iterator(Node<T>* ptr) : my_ptr(ptr){
+
         }
         
+        T& operator*(){
+            
+            return my_ptr->data;
+        }
+
+        protected:
+        Node<T>* my_ptr;
+    };
+    //END ITERATOR DECLARATION
+
+    //EXTRA
+    void deque_extra(){
+
+    }
+
+    template<typename... G>
+    void deque_extra(T val, G... args){
+        push_back(val);
+        deque_extra(args...);
+    }
+
+    //CONSTRUCTORS
+    deque() : m_head(nullptr), m_tail(nullptr), m_size(0){ 
+        
     } 
-    // retrieve frnt element of Deque 
-    T& front() { 
-        if (isEmpty()){ 
-            cout << " Underflow!!\n" << endl; 
-            return p[frnt]; 
-        } 
-        return p[frnt]; 
-    } 
+
+    template<typename... G>
+    deque(G... args){
+        deque();
+        deque_extra(args...);
+    }
+        
+    ~deque(){
+        Node<T>* current_node = m_head;
+        while (current_node != nullptr) {
+            Node<T>* next_node = current_node->next;
+            delete current_node;
+            current_node = next_node;
+        }
+        m_head = nullptr;
+    }    
+
+    //MEMBER FUNCTIONS
+    void operator=(deque<T> other){
+
+    }
+
+    //ELEMENT ACCESS
+    T& at(int pos){
+        int curr = pos;
+        Node<T>* curr_node = m_head;
+        while(curr != 0){
+            curr_node = curr_node->next;
+            curr--;
+        }
+        return curr_node->data;
+    }
     
-    // retrieve rear element of Deque 
-    T getRear() 
-    { 
-        if(isEmpty() || rear == 0)  { 
-            cout << " Underflow!!\n" << endl; 
-            return -1 ; 
-        } 
-        return p[rear]; 
-    } 
-    
+    T& operator[](int pos){
+        int curr = pos;
+        Node<T>* curr_node = m_head;
+        while(curr != 0){
+            curr_node = curr_node->next;
+            curr--;
+        }
+        return curr_node->data;
+    }
+
+    T& front(){
+        return m_head->data;
+    }
+
+    T& back(){
+        return m_tail->data;
+    }
+
+    //ITERATORS
     iterator begin(){
-        return iterator(p[frnt]);
+        return iterator(m_head);
+    }
+
+    iterator end(){
+        return iterator(m_tail);
+    }
+
+    reverse_iterator rbegin(){
+        return reverse_iterator(m_tail);
+    }
+
+    reverse_iterator rend(){
+        return reverse_iterator(m_head);
+    }
+
+    //CAPACITY
+    bool empty(){
+        return m_size == 0;
+    }
+
+    int size(){
+        return m_size;
+    }
+
+    //MODIFIERS
+    void clear(){
+        Node<T>* current_node = m_head;
+        while (current_node != nullptr) {
+            Node<T>* next_node = current_node->next;
+            delete current_node;
+            current_node = next_node;
+        }
+        m_head = nullptr;
+    }
+
+    iterator insert(iterator pos, T val){
+        Node<T>* curr_node = pos->getNode();
+        Node<T>* orig_prev = curr_node->prev;
+        Node<T>* new_node = new Node<T>(val);
+        orig_prev->next = new_node;
+        curr_node->prev = new_node;
+        new_node->prev = orig_prev;
+        new_node->next = curr_node;
+        m_size++;
+        return iterator(new_node);
+    }
+
+    iterator erase(iterator pos){
+        Node<T>* curr_node = pos->getNode();
+        Node<T>* r_node;
+        if(curr_node == m_tail){
+            r_node = nullptr;
+            curr_node->prev->next = nullptr;
+            delete curr_node;
+            
+
+        }
+        else{
+            r_node = curr_node->next;
+            curr_node->prev->next = r_node;
+            r_node->prev = curr_node->prev;
+            delete curr_node;
+            
+        }
+        m_size--;
+        return r_node;
+    }
+
+    void push_back(T val){
+        Node<T>* new_node = new Node<T>(val);
+        if(m_head == nullptr){
+            m_head = new_node;
+            m_head->prev = nullptr;
+            m_head->next = nullptr;
+            m_tail = m_head;
+        }
+        else{
+            Node<T>* curr_node = m_tail;
+            curr_node->next = new_node;
+            new_node->prev = curr_node;
+            new_node->next = nullptr;
+            m_tail = new_node;
+        }
+        m_size++;
+    }
+
+    void pop_back(){
+        if(m_tail != nullptr){
+            if(m_tail->prev != nullptr){
+                Node<T>* p = m_tail->prev;
+                Node<T>* curr = m_tail;
+                p->next = nullptr;
+                m_tail = p;
+                delete curr;
+            }
+            else{
+                Node<T>* curr = m_tail;
+                m_tail = nullptr;
+                m_head = nullptr;
+                delete curr;
+            }
+            m_size--;
+        }
+    }
+
+    void push_front(T val){
+        Node<T>* new_node = new Node<T>(val);
+        if(m_head == nullptr){
+            m_head = new_node;
+            m_head->prev = nullptr;
+            m_head->next = nullptr;
+            m_tail = m_head;
+        }
+        else{
+            Node<T>* old = m_head;
+            old->prev = new_node;
+            new_node->prev = nullptr;
+            new_node->next = old;
+            m_head = new_node;  
+        }
+        m_size++;
+    }
+
+    void pop_front(){
+        if(m_head != nullptr){
+            if(m_head->next != nullptr){
+                Node<T>* curr = m_head;
+                m_head = m_head->next;
+                m_head->prev = nullptr;
+                delete curr;
+            }
+            else{
+                Node<T>* curr = m_head;
+                m_head = nullptr;
+                m_tail = nullptr;
+                delete curr;
+            }
+            m_size--;
+        }
+    }
+
+    void resize(int count){ 
+        int c = 0;
+        if(count < m_size){
+            Node<T>* curr_node = m_head;
+            c++;
+            while(c < count){
+                curr_node = curr_node->next;
+                c++;
+            }
+            m_tail = curr_node;
+            curr_node = curr_node->next;
+            while (curr_node != nullptr) {
+                Node<T>* next_node = curr_node->next;
+                delete curr_node;
+                curr_node = next_node;
+            }
+            m_tail->next = nullptr;
+        }
+    }
+
+    void resize(int count, T val){
+        int c=0;
+        if(count < m_size){
+            resize(count);
+        }
+        if(count > m_size){
+            while(m_size < count){
+                Node<T>* new_node = new Node<T>(val);
+                new_node->prev = m_tail;
+                m_tail->next = new_node;
+                new_node->next = nullptr;
+                m_tail = new_node;
+                m_size++;
+            }
+        }
     }
 };
