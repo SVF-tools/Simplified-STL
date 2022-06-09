@@ -8,29 +8,67 @@ template<typename T>
 class vector
 {
     T *p;
-    int size;
-    int capacity;
+    int my_size;
+    int my_capacity;
 
     public:
 
     class const_iterator{
         public:
-        const_iterator(T ptr) : my_ptr(ptr){
-
+        const_iterator(T* ptr) : my_ptr(ptr){
+            
         }
         
-        const T& operator*(){
-            
-            return my_ptr;
+        T& operator*(){
+            return *my_ptr;
+        }
+
+        const_iterator operator+(int n){
+            return my_ptr+n;
+        }
+
+        const_iterator operator-(int n){
+            return my_ptr-n;
+        }
+
+        bool operator==(const_iterator other){
+            return my_ptr == other.my_ptr;
+        }
+
+        bool operator!=(const_iterator other){
+            return my_ptr != other.my_ptr;
+        }
+
+        const_iterator operator++(int){
+            return my_ptr++;
+        }
+
+        const_iterator operator--(int){
+            return my_ptr--;
         }
 
         protected:
-        T my_ptr;
+        T *my_ptr;
+    };
+
+    class reverse_iterator{
+        public:
+        reverse_iterator(T* ptr) : my_ptr(ptr){
+
+        }
+        
+        T& operator*(){
+            
+            return *my_ptr;
+        }
+
+        protected:
+        T* my_ptr;
     };
 
     vector(int sz = SIZE){
-        capacity = sz;
-        size = 0;
+        my_capacity = sz;
+        my_size = 0;
         p = new T[sz];
     }
 
@@ -38,18 +76,141 @@ class vector
         delete[] p;
     }
 
-    void push_back(T d){
-        p[size] = d;
-        size++;
+    //MEMBER FUNCTIONS
+
+    vector& operator=(vector& other){
+        clear();
+        for(int i=0; i < other.size(); i++){
+            push_back(other[i]);
+        }
+        my_size=other.size();
+        
+        return *this;
+    }
+
+    //ELEMENT ACCESS
+
+    T& at(int index){
+        return p[index];
     }
 
     T& operator[](int spot){
         return p[spot];
     }
 
-    const_iterator begin(){
-        return const_iterator(p[0]);
+    T& front(){
+        return p[0];
     }
-    
+
+    T& back(){
+        return p[my_size-1];
+    }
+
+    T* data(){
+        return p;
+    }
+
+    //ITERATORS
+
+    const_iterator begin(){
+        return const_iterator(p);
+    }
+
+    const_iterator end(){
+        return const_iterator(p+my_size);
+    }
+
+    reverse_iterator rbegin(){
+        return reverse_iterator(p+my_size);
+    }
+
+    reverse_iterator rend(){
+        return reverse_iterator(p);
+    }
+
+    //CAPICITY
+
+    bool empty(){
+        return my_size==0;
+    }
+
+    int size(){
+        return my_size;
+    }
+
+    int max_size(){
+        return my_capacity;
+    }
+
+    //MODIFIERS
+
+    void clear(){
+        for(int i=0; i < my_size; i++){
+            p[i]=T();
+        }
+        my_size = 0;
+    }
+
+    const_iterator insert(const_iterator pos, const T& val){
+        const_iterator it = pos;
+        this->my_size++;
+        
+        int next = *pos;
+        *pos = val;
+        pos++;
+        
+        while(pos != this->end()) {
+            int temp = *pos;
+            *pos = next;
+            next = temp;
+            pos++;
+        }
+        
+        return it;
+    }
+
+    const_iterator erase(const_iterator pos){
+        const_iterator it = pos;
+        
+        while(pos != this->end()) {
+            const_iterator temp = pos+1;
+            
+            *pos = *temp;
+            pos++;
+        }
+        
+        this->my_size--;
+        return it;
+    }
+
+    void push_back(T d){
+        p[my_size] = d;
+        my_size++;
+    }
+
+    void pop_back(){
+        if(my_size != 0){
+            p[my_size-1]=T();
+            my_size--;
+        }
+    }
+
+    void resize(int size, T val = T()){
+        if(my_size < size){
+            for(int i=my_size; i < size; i++)
+                p[i] = val; 
+        }
+        else if(my_size > size){
+            for(int i=my_size-1; i <= size; i--)
+                p[i] = T();
+        }
+        my_size=size;
+    }
+
+    void swap(vector<T> new_vector){
+        vector<T> temp = *this;
+        *this = new_vector;
+        new_vector = temp;
+    }
 
 };

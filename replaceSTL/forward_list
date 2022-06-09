@@ -24,6 +24,10 @@ class forward_list
 
         }
 
+        Node<T>* getNode(){
+            return my_ptr;
+        }
+
         T& operator*(){
             return my_ptr->data;
         }
@@ -31,6 +35,8 @@ class forward_list
         private:
         Node<T>* my_ptr;
     };
+    
+    //CONSTRUCTORS
 
     forward_list() : m_head(nullptr) , m_tail(nullptr) , m_size(0) {
 
@@ -46,6 +52,60 @@ class forward_list
             m_head = nullptr;
         }
 
+    //ELEMENT ACCESS
+
+    T& front(){
+        
+        return m_head->data;
+    }
+
+    //ITERATORS
+    iterator begin(){
+        return iterator(m_head);
+    }
+    //CAPACITY
+
+    bool empty(){
+        return m_size == 0;
+    }
+
+    int max_size(){
+        return m_size;
+    }
+
+    //MODIFIERS
+
+    void clear(){
+        Node<T>* curr_node = m_head;
+        while(curr_node != nullptr){
+            Node<T>* next_node = curr_node->next;
+            delete curr_node;
+            curr_node = next_node;
+        }
+        m_head = nullptr;
+        m_tail = nullptr;
+        m_size = 0;
+    }
+
+    iterator insert_after(iterator pos, T val){
+        Node<T>* new_node = new Node<T>(val);
+        Node<T>* old_next = pos->getNode()->next;
+        pos->next = new_node;
+        new_node->prev = pos;
+        old_next->prev = new_node;
+        new_node->next = old_next;
+        m_size++;
+        return iterator(new_node);
+    }
+
+    iterator erase_after(iterator pos){
+        Node<T>* e = pos->getNode()->next;
+        pos->next = e->next;
+        delete e;
+        m_size--;
+        return iterator(pos->next);
+    }
+
     void push_front(T d){
         Node<T>* head_temp = m_head;
         Node<T>* current = new Node<T>(d);
@@ -54,12 +114,42 @@ class forward_list
         ++m_size;
     }
 
-    T& front(){
-        return m_head->data;
+    void pop_front(){
+        Node<T>* old = m_head;
+        if(m_head->next != nullptr){
+            m_head = m_head->next;
+        }
+        else{
+            m_head = nullptr;
+            m_tail = nullptr;
+        }
+        m_size--;
+        delete old;
     }
 
-    iterator begin(){
-        return iterator(m_head);
+    void resize(int count){
+        if(count < m_size){
+            int c = 1;
+            Node<T>* curr = m_head;
+            while(c < count){
+                curr = curr->next;
+                c++;
+            }
+
+            Node<T>* n = curr->next;
+            curr->next = nullptr;
+            m_tail = curr;
+
+            while(n->next != nullptr){
+                Node<T>* temp = n;
+                n = n->next;
+                delete temp;
+            }
+
+            delete n;
+
+        }
+        m_size = count;
     }
 
 };

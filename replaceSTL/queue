@@ -25,6 +25,41 @@ class queue{
         delete[] p;
     }
 
+    //MEMBER FUNCTIONS
+
+    queue& operator=(queue& other){
+        queue temp;
+        clear();
+
+        for(int i = 0; i < other.size(); i++){
+            push(other.p[i]);
+        }
+
+        return *this;
+    }
+
+    //ELEMENT ACCESS
+
+    T& front(){
+        return p[frnt];
+    }
+
+    T& back(){
+        return p[rear];
+    }
+
+    //CAPACITY
+
+    bool empty(){
+        return count == 0;
+    }
+
+    int size(){
+        return count;
+    }
+
+    //MODIFIERS
+
     void push(T d){
         if(isFull()){
             exit(EXIT_FAILURE);
@@ -35,30 +70,38 @@ class queue{
         count++;
     }
 
-    T& front(){
-        return p[frnt];
-    }
-
-    T& pop(){
-        if (isEmpty())
+    void pop(){
+        if (empty())
         {
             exit(EXIT_FAILURE);
         }
-    
-        int f = frnt;
-        
-    
-        frnt = (frnt + 1) % capacity;
-        count--;
-    
-        return p[f];
+        else {
+            for(int i = 0; i < count-1; i++){
+                p[i] = p[i+1];
+            }
+            
+            rear--;
+            count--;
+        }
     }
 
-    bool isEmpty(){
-        return count == 0;
+    void swap(queue& other){
+        queue temp;
+        temp = *this;
+        *this = other;
+        other = temp;
     }
+
+    //OTHER
 
     bool isFull(){
-        return count = capacity;
+        return count == capacity;
     }
+
+    void clear(){
+        while(size() != 0){
+            pop();
+        }
+    }
+
 };
