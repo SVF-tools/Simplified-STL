@@ -21,11 +21,17 @@ struct Node {
 	// Link to the right child
 	Node* right;
 
+	// Link to parent
+	Node* parent;
 public:
 
     Node(T d) : data(d){
         
     }
+
+	Node(T d, Node* L, Node* R, Node* P) : data(d), left(L), right(R), parent(P){
+
+	}
 
 	// Function to print the inorder
 	// traversal of the BST
@@ -62,34 +68,50 @@ public:
 		
 		@param r pointer to the root node
 		@param d the data to insert
+		@param p pointer to the parent node
 		@return pointer to the root of the resultant BST
 	*/
-	Node* insert(Node* r, T d)
+	Node* insert(Node* r, T d, Node* p)
 	{
-
 		// Add the node when NULL node is encountered
 		if (r == NULL) {
-			Node<T>* tmp = new Node(d);
-			tmp->data = d;
-			tmp->left = tmp->right = NULL;
+			Node<T>* tmp = new Node(d, NULL, NULL, p);
+			//tmp->data = d;
+			//tmp->left = tmp->right = NULL;
 			return tmp;
 		}
 
 		// Traverse the left subtree if data
 		// is less than the current node
 		if (d < r->data) {
-			r->left = insert(r->left, d);
+			r->left = insert(r->left, d, r);
 			return r;
 		}
 
 		// Traverse the right subtree if data
 		// is greater than the current node
 		else if (d > r->data) {
-			r->right = insert(r->right, d);
+			r->right = insert(r->right, d, r);
 			return r;
 		}
 		else
 			return r;
+	}
+
+	// Returns the left most node from given node
+	Node<T>* findLeft(Node<T>* root){
+	    if(root->left == NULL){
+	        return root;
+	    }
+	    return findLeft(root->left);
+	}
+
+	// Returns the right most node from given node
+	Node<T>* findRight(Node<T>* root){
+	    if(root->right == NULL){
+	        return root;
+	    }
+	    return findRight(root->right);
 	}
 };
 
@@ -104,8 +126,6 @@ class set {
 	// The number of elements in the set
 	int size;
 
-    
-
 public:
     class const_iterator{
         public:
@@ -114,17 +134,49 @@ public:
         }
         
         const T& operator*(){
-            
             return my_ptr->data;
         }
 
-        
+        const_iterator operator++(int){
+            // If you can walk right, walk right, then fully left.
+            // otherwise, walk up until you come from left.
+            
+            if(my_ptr == NULL){
+                return my_ptr;
+            }
+            
+            if(my_ptr->right != NULL){
+                my_ptr = my_ptr->right;
+                my_ptr = my_ptr->findLeft(my_ptr);
+                
+                return my_ptr;
+            }
+            
+            while(true){
+                if(my_ptr->parent == NULL){
+                    my_ptr = NULL;
+                    return my_ptr;
+                }
+                if(my_ptr->parent->left == my_ptr){
+                    my_ptr = my_ptr->parent;
+                    return my_ptr;
+                }
+                my_ptr = my_ptr->parent;
+            }
+        }
 
-        
+		bool operator==(const_iterator other){
+            return my_ptr == other.my_ptr;
+        }
+
+        bool operator!=(const_iterator other){
+            return my_ptr != other.my_ptr;
+        }
 
         protected:
         Node<T>* my_ptr;
     };
+
 	// Default constructor
 	set()
 	{
@@ -139,26 +191,244 @@ public:
 		size = s.size;
 	}
 
+	//OPERATORS
+
+	set& operator=(set& s){
+		clear();
+		
+		T* arr = s.toArray();
+		for(int i = 0; i < s.getSize(); i++){
+		    this->insert(arr[i]);
+		}
+
+		return *this;
+	}
+
+	/*
+		Function to compute the difference of two sets
+		
+		@param s the set to be subtracted
+		@return the difference set
+	*/
+	set operator-(set& s)
+	{
+		set<T> res;
+		stack<Node<T>*> nodeStack;
+		nodeStack.push(this->root);
+
+		while (!nodeStack.empty()) {
+			Node<T>* node;
+			node = nodeStack.top();
+			nodeStack.pop();
+			if (!s.contains(node->data)) {
+				res.add(node->data);
+			}
+			if (node->right)
+				nodeStack.push(node->right);
+			if (node->left)
+				nodeStack.push(node->left);
+		}
+		return res;
+	}
+
+	/*
+		Function that checks equality of two sets
+		
+		@param s set to check equality with
+		@return boolean value denoting result of check
+	*/
+	bool operator==(set& s)
+	{
+		if (s.getSize() != size) {
+			return false;
+		}
+		stack<Node<T>*> nodeStack;
+		nodeStack.push(this->root);
+
+		while (!nodeStack.empty()) {
+			Node<T>* node;
+			node = nodeStack.top();
+			nodeStack.pop();
+			if (!s.contains(node->data)) {
+				return false;
+			}
+			if (node->right)
+				nodeStack.push(node->right);
+			if (node->left)
+				nodeStack.push(node->left);
+		}
+		return true;
+	}
+
 	/*
 		Function to Add an element to the set
 
 		@param data the element to add to the set
 	*/
-	void add(const T data)
+	void insert(const T data)
 	{
 		if (!root->containsNode(root, data)) {
-			root = root->insert(root, data);
+			root = root->insert(root, data, NULL);
 			size++;
 		}
 	}
 
-    void insert(const T data){
-        add(data);
-    }
+	//ITERATORS
 
     const_iterator begin(){
-        return const_iterator(root);
+        return const_iterator(root->findLeft(root));
     }
+
+	const_iterator end(){
+		return const_iterator(root->findRight(root))++;
+	}
+
+	
+	//CAPACITY
+
+	// checks whether the container is empty
+	bool empty(){
+		return size == 0;
+	}
+
+	/*
+		Function to return the current size of the set
+		
+		@return size of set
+	*/
+	int getSize()
+	{
+		return size;
+	}
+
+	//MODIFIERS
+
+	// clears the contents
+	void clear(){
+		deleteTree(root);
+		root = NULL;
+
+		size = 0;
+	}
+
+	void deleteTree(Node<T>* node){
+		if(node == NULL) return;
+
+		deleteTree(node->left);
+		deleteTree(node->right);
+
+		delete node;
+	}
+
+	// erases elements
+	void erase(const_iterator pos){
+        if(contains(*pos)){
+            root = deleteNode(root, *pos);
+            size--;
+        }
+	}
+	Node<T>* deleteNode(Node<T>* root, T data){
+	    
+	    if(root == NULL)
+	        return root;
+	   
+	    if(data < root->data){
+	        root->left = deleteNode(root->left, data);
+	    }
+	    else if(data > root->data){
+	        root->right = deleteNode(root->right, data);
+	    }
+	    else {
+            //node has no child
+	        if(root->left == NULL && root->right == NULL){
+	            return NULL;
+	        }
+	        
+	        //node has one child or no child
+	        else if(root->left == NULL){
+                Node<T>* temp = root->right;
+                temp->parent = root->parent;
+                delete root;
+                return temp;
+	        }
+	        else if(root->right == NULL){
+                Node<T>* temp = root->left;
+                temp->parent = root->parent;
+                delete root;
+                return temp;
+	        }
+	        
+	        //node has two children
+	        Node<T>* temp = root->findLeft(root->right);
+	        
+	        root->data = temp->data;
+	        
+	        root->right = deleteNode(root->right, temp->data);
+	    }
+	    return root;
+	}
+
+	// swaps the contents
+	void swap(set<T>& other){
+		T* thisArr = this->toArray();
+		T* otherArr = other.toArray();
+		int thisSize = this->getSize();
+		int otherSize = other.getSize();
+		
+		this->clear();
+		other.clear();
+		
+		for(int i = 0; i < thisSize; i++){
+		    other.insert(thisArr[i]);
+		}
+		
+		for(int i = 0; i < otherSize; i++){
+		    this->insert(otherArr[i]);
+		}
+	}
+
+	//LOOKUP
+
+	// returns the number of elements matching specific key
+	int count(const T key){
+		T* arr = toArray();
+		int counter = 0;
+
+		for(int i = 0; i < size; i++){
+			if(arr[i] == key)
+				counter++;
+		}
+
+		return counter;
+	}
+
+	// finds element with specific key
+	const_iterator find(const T key){
+		if(!contains(key))
+			return end();
+		
+		const_iterator it = begin();
+		for(;it != end(); it++){
+			if(*it == key)
+				return it;
+		}
+
+		return end();
+	}
+
+	/*
+		Function to check whether the set contains an element
+		
+		@param data the element to search
+		@return relut of check
+	*/
+	bool contains(T data)
+	{
+		return root->containsNode(root, data) ? true : false;
+	}
+
+	//OTHER
+
 	/*
 		Function to compute the union of two sets
 		
@@ -259,62 +529,6 @@ public:
 	}
 
 	/*
-		Function to compute the difference of two sets
-		
-		@param s the set to be subtracted
-		@return the difference set
-	*/
-	set operator-(set& s)
-	{
-		set<T> res;
-		stack<Node<T>*> nodeStack;
-		nodeStack.push(this->root);
-
-		while (!nodeStack.empty()) {
-			Node<T>* node;
-			node = nodeStack.top();
-			nodeStack.pop();
-			if (!s.contains(node->data)) {
-				res.add(node->data);
-			}
-			if (node->right)
-				nodeStack.push(node->right);
-			if (node->left)
-				nodeStack.push(node->left);
-		}
-		return res;
-	}
-
-	/*
-		Function that checks equality of two sets
-		
-		@param s set to check equality with
-		@return boolean value denoting result of check
-	*/
-	bool operator==(set& s)
-	{
-		if (s.getSize() != size) {
-			return false;
-		}
-		stack<Node<T>*> nodeStack;
-		nodeStack.push(this->root);
-
-		while (!nodeStack.empty()) {
-			Node<T>* node;
-			node = nodeStack.top();
-			nodeStack.pop();
-			if (!s.contains(node->data)) {
-				return false;
-			}
-			if (node->right)
-				nodeStack.push(node->right);
-			if (node->left)
-				nodeStack.push(node->left);
-		}
-		return true;
-	}
-
-	/*
 		Function to print the cartesian product of two sets
 		
 		@param s the set to find product with
@@ -380,15 +594,21 @@ public:
 		return A;
 	}
 
-	/*
-		Function to check whether the set contains an element
-		
-		@param data the element to search
-		@return relut of check
-	*/
-	bool contains(T data)
+	// Function to convert set to sorted array
+	T* toSortedArray()
 	{
-		return root->containsNode(root, data) ? true : false;
+		T* A = new T[size];
+		int i = 0;
+		inorder(this->root, A, i);
+		return A;
+	}
+	void inorder(Node<T>* r, T* a, int& i){
+	    if (r == NULL) {
+			return;
+		}
+		inorder(r->left, a, i);
+		a[i++] = r->data;
+		inorder(r->right, a, i);
 	}
 
 	// Function to print the contents of the set
@@ -397,16 +617,6 @@ public:
 		cout << "{ ";
 		root->inorder(root);
 		cout << "}" << endl;
-	}
-
-	/*
-		Function to return the current size of the set
-		
-		@return size of set
-	*/
-	int getSize()
-	{
-		return size;
 	}
 };
 
