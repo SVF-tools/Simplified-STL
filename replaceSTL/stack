@@ -21,33 +21,73 @@ class stack{
         delete[] p;
     }
 
-    void push(T d){
-        if(isFull()){
-            exit(EXIT_FAILURE);
+    //MEMBER FUNCTIONS
+
+    stack& operator=(stack& other){
+        stack temp;
+        clear();
+
+        for(int i = 0; i < other.size(); i++){
+            push(other.p[i]);
         }
-        m_top++;
-        p[m_top] = d;
+
+        return *this;
     }
 
-    T& pop(){
-        if(isEmpty()){
-            exit(EXIT_FAILURE);
-        }
-        int t = m_top;
-        m_top--;
-        return p[t];
-    }
+    //ELEMENT ACCESS
 
     T& top(){
         return p[m_top];
     }
 
-    bool isEmpty(){
+    //CAPACITY
+
+    bool empty(){
         return m_top == -1;
     }
 
+    int size(){
+        return m_top+1;
+    }
+
+    //MODIFIERS
+
+    void push(T d){
+        if(isFull()){
+            //exit(EXIT_FAILURE);
+            capacity*=2;
+        }
+        m_top++;
+        p[m_top] = d;
+    }
+
+    void pop(){
+        if(empty()){
+            exit(EXIT_FAILURE);
+        }
+        if(m_top+1 <= capacity/2 && capacity != SIZE){
+            capacity /= 2;
+        }
+        m_top--;
+    }
+
+    void swap(stack& other){
+        stack temp;
+        temp = *this;
+        *this = other;
+        other = temp;
+    }
+  
+    //OTHER
+
     bool isFull(){
         return m_top == capacity-1;
+    }
+
+    void clear(){
+        while(size() != 0){
+            pop();
+        }
     }
 
 };
