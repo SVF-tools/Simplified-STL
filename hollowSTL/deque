@@ -42,8 +42,8 @@ class deque{
 
     //Element Access
     reference front(){
-        return p[my_front];
-        //return deque_front(p[my_front]);
+        //return p[my_front];
+        return deque_front(p[my_front]);
     }
 
     reference deque_front(T f);
