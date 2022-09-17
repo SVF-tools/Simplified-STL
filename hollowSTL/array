@@ -1,0 +1,67 @@
+#include <algorithm>
+#include <iostream>
+#include <initializer_list>
+#include <iterator>
+using namespace std;
+
+template <typename T, int S>
+class array{
+    private:
+        size_t my_size;
+        T* p;
+
+    public:
+        using value_type            = T;
+        using size_type             = size_t;
+        //todo difference type
+        using reference             = T&; 
+        using const_reference       = const T&;
+        using pointer               = T*;
+        using const_pointer         = const T;
+        
+        typedef iterator_base<T>            iterator;
+        typedef const iterator_base<T>      const_iterator;
+
+        typedef reverse_iterator_base<T>         reverse_iterator;
+        typedef const reverse_iterator_base<T>   const_reverse_iterator;
+        
+    array(){
+        my_size = S;
+        p = new T[S];
+    }
+    array(initializer_list<T> i);
+    
+    //ELEMENT ACCESS
+
+    T& at(int index);
+
+    T& operator[](int index);
+
+
+    T& front();
+
+    T& back();
+
+    T* data();
+
+    //iterators
+    iterator begin();
+
+    const_iterator begin() const;
+
+    iterator end();
+
+    //CAPACITY
+    bool empty();
+
+    int size();
+
+    int max_size();
+
+    //OPERATIONS
+    void fill(const T& val);
+
+    void swap(array<T,S> new_array);
+
+    
+};
