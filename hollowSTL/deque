@@ -60,7 +60,7 @@ class deque{
         //not empty
         else{
             //No space
-            if my_used == my_size {
+            if (my_used == my_size) {
                 T* q = new T[my_size + 10];
                 for(int i=0; i<my_size;i++){
                     q[i] = p[(my_front+i)%my_size];
