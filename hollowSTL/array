@@ -4,7 +4,7 @@
 #include <iterator>
 using namespace std;
 
-template <typename T, int S>
+template <typename T, size_t S>
 class array{
     private:
         size_t my_size;
@@ -30,31 +30,51 @@ class array{
         p = new T[S];
     }
     array(initializer_list<T> i);
+
+    void operator=(initializer_list<T> i);
+
     
     //ELEMENT ACCESS
 
     T& at(int index);
 
-    T& operator[](int index);
+    T& operator[](int index){
+        return p[index];
+    }
 
 
-    T& front();
+    T& front(){
+        return p[0];
+    }
 
-    T& back();
+    T& back(){
+        return p[my_size-1];
+    }
 
     T* data();
 
     //iterators
-    iterator begin();
+    //begin -- Done
+    iterator begin(){
+        return iterator(&p[0]);
+    }
 
-    const_iterator begin() const;
+    const_iterator begin() const{
+        return const_iterator(&p[0]);
+    }
+
+    const_iterator cbegin() const{
+        return const_iterator(&p[0]);
+    }
 
     iterator end();
 
     //CAPACITY
     bool empty();
 
-    int size();
+    size_t size(){
+        return my_size;
+    }
 
     int max_size();
 

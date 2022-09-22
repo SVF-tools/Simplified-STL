@@ -10,7 +10,7 @@ class A {
   public:
     virtual void f(int *i) const {
       MUSTALIAS(global_ptr, i);
-    }
+    } 
 };
 
 int main(int argc, char **argv)

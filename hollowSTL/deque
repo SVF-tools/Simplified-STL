@@ -11,7 +11,7 @@ class deque{
         size_t my_used;
         size_t my_front;
         size_t my_back;
-        T* p;
+        T* *p;
 
     public:
         using value_type            = T;
@@ -30,7 +30,7 @@ class deque{
         
     deque(){
         my_size = 10;
-        p = new T[10];
+        p = new T*[10];
         my_front = -1;
         my_back = -1;
         my_used = 0;
@@ -41,18 +41,30 @@ class deque{
     deque& operator=( deque&& other );
 
     //Element Access
+    reference       at( size_type pos );
+    const_reference at( size_type pos ) const;
+
+    reference       operator[]( size_type pos );
+    const_reference operator[]( size_type pos ) const;
+
+
     reference front(){
-        //return p[my_front];
-        return deque_front(p[my_front]);
+        return *p[my_front];
     }
 
-    reference deque_front(T f);
+    //iterators
+    iterator begin(){
+        //pointer q = &front();
+        //iterator* b = new iterator(q);
+        //return *b;
+        return iterator(&front());
+    }
 
     //Modifiers
     void push_back(T data){
         //empty
         if(my_front == -1){
-            p[0] = data;
+            p[0] = &data;
             my_front = 0;
             my_back = 0;
             my_used = 1;
@@ -61,11 +73,11 @@ class deque{
         else{
             //No space
             if (my_used == my_size) {
-                T* q = new T[my_size + 10];
+                T* *q = new T*[my_size + 10];
                 for(int i=0; i<my_size;i++){
                     q[i] = p[(my_front+i)%my_size];
                     p = q;
-                    p[my_size] = data;
+                    p[my_size] = &data;
                     my_front = 0;
                     my_back = my_size;
                     my_size = my_size+10; 
@@ -76,11 +88,12 @@ class deque{
             else{
                 my_used++;
                 my_back = (my_back+1)%my_size;
-                p[my_back]=data;
+                p[my_back]=&data;
             }
         }
     }
     
+
 
     
 };

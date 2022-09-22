@@ -1,0 +1,83 @@
+#include <algorithm>
+#include <iostream>
+#include <initializer_list>
+#include <iterator>
+using namespace std;
+
+template <typename T>
+struct Node{
+            T my_data;
+            Node* next;
+            Node() = default;
+            constexpr explicit Node(T d) : my_data(d) {}
+        };
+
+template <typename T>
+class forward_list{
+    private:
+        Node<T>* my_head;
+        Node<T>* my_tail;
+        size_t my_size;
+
+        
+
+    public:
+        using value_type            = T;
+        using size_type             = size_t;
+        //todo difference type
+        using reference             = T&; 
+        using const_reference       = const T&;
+        using pointer               = T*;
+        using const_pointer         = const T;
+        
+        typedef iterator_base<T>            iterator;
+        typedef const iterator_base<T>      const_iterator;
+
+        typedef reverse_iterator_base<T>         reverse_iterator;
+        typedef const reverse_iterator_base<T>   const_reverse_iterator;
+
+    forward_list(){
+        my_head = nullptr;
+        my_tail = nullptr;
+        my_size = 0;
+    }
+
+    //Element Access
+
+    reference front(){
+        return my_head->my_data;
+    }
+
+    //iterators
+    iterator begin(){
+        return iterator(&my_head->my_data);
+    }
+
+    //Modifiers
+
+    void push_front(value_type data){
+        //new node
+        Node<T>* new_node = new Node<T>(data);
+        //empty list
+        if (my_size == 0){
+            my_head = new_node;
+            my_tail = new_node;
+            my_size = 1;
+        }
+        //not empty list
+        {
+            //list size 1
+            if (my_size == 1){
+                my_tail = new_node;
+                my_head->next = new_node;
+                my_size++;
+            }
+            //list size > 1
+            else{
+                my_tail->next = new_node;
+                my_tail = new_node;
+                my_size++;
+            }
+        }
+    }
+};
