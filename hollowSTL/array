@@ -2,6 +2,7 @@
 #include <iostream>
 #include <initializer_list>
 #include <iterator>
+#include <stdexcept>
 using namespace std;
 
 template <typename T, size_t S>
@@ -36,52 +37,125 @@ class array{
     
     //ELEMENT ACCESS
 
-    T& at(int index);
+    constexpr reference at( size_type pos ){
+        return p[pos];
+    }
 
-    T& operator[](int index){
-        return p[index];
+    constexpr const_reference at( size_type pos ) const{
+        return p[pos];
+    }
+
+    constexpr reference operator[]( size_type pos ){
+        return p[pos];
+    }
+
+    constexpr const_reference operator[]( size_type pos ) const {
+        return p[pos];
     }
 
 
-    T& front(){
+    constexpr reference front(){
         return p[0];
     }
 
-    T& back(){
+    constexpr const_reference front() const{
+        return p[0];
+    }
+
+    constexpr reference back(){
+        if(my_size == 0){
+            throw invalid_argument("Empty Array");
+        }
         return p[my_size-1];
     }
 
-    T* data();
+    constexpr const_reference back() const{
+        return p[my_size-1];
+    }
 
+    constexpr T* data() noexcept{
+        return p;
+    }
+
+    constexpr const T* data() const noexcept{
+        return p;
+    }
     //iterators
     //begin -- Done
-    iterator begin(){
+    constexpr iterator begin() noexcept{
         return iterator(&p[0]);
     }
 
-    const_iterator begin() const{
+    constexpr const_iterator begin() const noexcept{
         return const_iterator(&p[0]);
     }
 
-    const_iterator cbegin() const{
+    constexpr const_iterator cbegin() const noexcept{
         return const_iterator(&p[0]);
     }
 
-    iterator end();
+    constexpr iterator end() noexcept{
+        return iterator(&p[my_size]);
+    }
+    constexpr const_iterator end() const noexcept{
+        return const_iterator(&p[my_size]);
+    }
+    constexpr const_iterator cend() const noexcept{
+        return const_iterator(&p[my_size]);
+    }
+
+    constexpr reverse_iterator rbegin() noexcept;
+    constexpr const_reverse_iterator  rbegin() const noexcept;
+    constexpr const_reverse_iterator crbegin() const noexcept;
+
+    constexpr reverse_iterator rend() noexcept{
+        T* q = new T[S+1];
+        for (int i=0; i < my_size; i++){
+            q[i] = p[my_size-1-i];
+        }
+        return reverse_iterator(&q[my_size+1]);
+    }
+    constexpr const_reverse_iterator rend() const noexcept{
+        T* q = new T[S+1];
+        for (int i=0; i < my_size; i++){
+            q[i] = p[my_size-1-i];
+        }
+        return const_reverse_iterator(&q[my_size+1]);
+    }
+
+    constexpr const_reverse_iterator crend() const noexcept{
+        T* q = new T[S+1];
+        for (int i=0; i < my_size; i++){
+            q[i] = p[my_size-1-i];
+        }
+        return const_reverse_iterator(&q[my_size+1]);
+    }
 
     //CAPACITY
-    bool empty();
+    constexpr bool empty() const noexcept{
+        return my_size == 0;
+    }
 
-    size_t size(){
+    constexpr size_type size() const noexcept{
         return my_size;
     }
 
-    int max_size();
+    constexpr size_type max_size() const noexcept{
+        return size();
+    }
 
     //OPERATIONS
-    void fill(const T& val);
+    constexpr void fill( const T& value ){
+        for(int i=0; i<my_size ;i++){
+            p[i] = value;
+        }
+    }
 
-    void swap(array<T,S> new_array);
+    constexpr void swap( array& other ) noexcept{
+        for(int i=0; i<my_size; i++){
+            p[i] = other[i];
+        }
+    }
 
     
 };
