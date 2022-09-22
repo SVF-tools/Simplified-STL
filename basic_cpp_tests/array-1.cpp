@@ -28,5 +28,5 @@ int main(int argc, char **argv)
 
   aptr->f(ptr);
 
-  return 0;
+  return 0; 
 }
