@@ -20,8 +20,10 @@ int main(int argc, char **argv)
   deque<const A*> adeque;
   A a;
   adeque.push_back(&a);
-  adeque.clear();
-  const A *aptr = adeque.front();
+  deque<const A*> bdeque;
+  bdeque = adeque;
+
+  const A *aptr = bdeque.back();
 
   aptr->f(ptr);
 
