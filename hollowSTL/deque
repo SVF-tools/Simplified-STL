@@ -36,31 +36,224 @@ class deque{
         my_used = 0;
     }
 
+    explicit deque( size_type count ){
+        my_size = count;
+        p = new T*[my_size];
+        my_front = -1;
+        my_back = -1;
+        my_used = 0;
+    }
+
     ~deque();
 
-    deque& operator=( deque&& other );
+    private:
 
-    //Element Access
-    reference       at( size_type pos );
-    const_reference at( size_type pos ) const;
+    void fixup(){
+        T* *q = new T*[my_size];
+        for(int i=0; i<my_size;i++){
+            q[i] = p[(my_front+i)%my_size];
+        }
+        p = q;
+        my_front = 0;
+        my_back = my_size - 1;
+    }
+    bool has_space(){
+        return my_used + 2 < my_size;
+    }
+    bool has_space(size_type i){
+        return my_used + 2 + i <= my_size;
+    }
+    void increase_size(int extra = 10){
+        T* *q = new T[my_size+extra];
+        for(int i=0;i<my_used;i++){
+            q[i+1] = p[(my_front+1)%my_size];
+        }
+        p = q;
+        my_size=my_size+extra;
+        my_front = 1;
+        my_back = my_used;
+    }
+    public:
 
-    reference       operator[]( size_type pos );
-    const_reference operator[]( size_type pos ) const;
+    // Element Access
+    reference       at( size_type pos ){
+        return *p[(my_front+pos)%my_size];
+    }
+    const_reference at( size_type pos ) const{
+        return *p[(my_front+pos)%my_size];
+    }
 
-
+    reference       operator[]( size_type pos ){
+        return *p[(my_front+pos)%my_size];
+    }
+    const_reference operator[]( size_type pos ) const{
+        return *p[(my_front+pos)%my_size];
+    }
+    
     reference front(){
         return *p[my_front];
     }
-
-    //iterators
-    iterator begin(){
-        //pointer q = &front();
-        //iterator* b = new iterator(q);
-        //return *b;
-        return iterator(&front());
+    const_reference front() const{
+        return *p[my_front];
     }
 
-    //Modifiers
+    reference back(){
+        return *p[my_back];
+    }
+    const_reference back() const{
+        return *p[my_back];
+    }
+
+
+    // Iterators
+    iterator begin() noexcept{
+        return iterator(&front());
+    }
+    const_iterator begin() const noexcept{
+        return const_iterator(&front());
+    }
+    const_iterator cbegin() const noexcept{
+        return const_iterator(&front());
+    }
+
+    iterator end() noexcept{
+        return iterator(&*p[(my_back+1)%my_size]);
+    }
+    const_iterator end() const noexcept{
+        return const_iterator(&*p[(my_back+1)%my_size]);
+    }
+    const_iterator cend() const noexcept{
+        return const_iterator(&*p[(my_back+1)%my_size]);
+    }
+
+    reverse_iterator rbegin() noexcept{
+        return reverse_iterator(&*p[my_back]);
+
+    }
+    const_reverse_iterator rbegin() const noexcept{
+        return const_reverse_iterator(&*p[my_back]);
+    }
+    const_reverse_iterator crbegin() const noexcept{
+        return const_reverse_iterator(&*p[my_back]);
+    }   
+
+    reverse_iterator rend() noexcept{
+        return reverse_iterator(&*p[my_front - 1]);
+    }
+    const_reverse_iterator rend() const noexcept{
+        return const_reverse_iterator(&*p[my_front - 1]);
+    }
+    const_reverse_iterator crend() const noexcept{
+        return const_reverse_iterator(&*p[my_front - 1]);
+    }
+
+    // Capacity
+    bool empty() const noexcept{
+        return my_used == 0;
+    }
+
+    size_type size() const noexcept{
+        return my_used;
+    }
+    //             ++ Max Size Ommited ++
+
+    void shrink_to_fit(){
+        T* *q = new T[my_used + 2];
+        for(int i=0; i < my_used; i++){
+            q[i+1] = p[(my_front+i)%my_size];
+        }
+        p = q;
+        my_size = my_used + 2;
+        my_front = 1;
+        my_back = my_used;
+    }
+
+    // Modifiers
+    void clear() noexcept{
+        my_size = 10;
+        delete[] p;
+        p = new T*[10];
+        my_front = -1;
+        my_back = -1;
+        my_used = 0;
+    }
+
+    iterator insert( const_iterator pos, const T& value ){
+        if (pos == begin()){
+            if(has_space()){
+                size_t temp = my_front == 0 ? my_size-1 : my_front-1;
+                p[temp] = value;
+                my_front = temp;
+                return begin();
+            }
+            else{
+                increase_size();
+                p[0] = value;
+                my_front = 0;
+                my_used++;
+                return begin();
+            }
+        }
+        else if (pos == end()){
+            if(has_space()){
+                p[(my_back+1)%my_size] = value;
+                my_back = (my_back+1)%my_size;
+                return iterator(&*p[my_back]);
+            }
+            else{
+                increase_size();
+                p[my_back+1] = value;
+                my_used++;
+                my_back++;
+                return return iterator(&*p[my_back]);
+            }
+        }
+        return iterator(nullptr);
+    }
+    iterator insert( const_iterator pos, T&& value ){
+        if (pos == begin()){
+            if(has_space()){
+                size_t temp = my_front == 0 ? my_size-1 : my_front-1;
+                p[temp] = value;
+                my_front = temp;
+                return begin();
+            }
+            else{
+                increase_size();
+                p[0] = value;
+                my_front = 0;
+                my_used++;
+                return begin();
+            }
+        }
+        else if (pos == end()){
+            if(has_space()){
+                p[(my_back+1)%my_size] = value;
+                my_back = (my_back+1)%my_size;
+                return iterator(&*p[my_back]);
+            }
+            else{
+                increase_size();
+                p[my_back+1] = value;
+                my_used++;
+                my_back++;
+                return return iterator(&*p[my_back]);
+            }
+        }
+        return iterator(nullptr);
+    }
+    iterator insert( const_iterator pos, size_type count, const T& value ){
+        if(has_space(count)){
+            
+        }
+    }
+    template< class InputIt >
+    iterator insert( const_iterator pos, InputIt first, InputIt last );
+    iterator insert( const_iterator pos, std::initializer_list<T> ilist );
+
+
+
+    // TODO: Fixup to same as cpp reference
     void push_back(T data){
         //empty
         if(my_front == -1){
@@ -76,13 +269,13 @@ class deque{
                 T* *q = new T*[my_size + 10];
                 for(int i=0; i<my_size;i++){
                     q[i] = p[(my_front+i)%my_size];
-                    p = q;
-                    p[my_size] = &data;
-                    my_front = 0;
-                    my_back = my_size;
-                    my_size = my_size+10; 
-                    my_used++;
                 }
+                p = q;
+                p[my_size] = &data;
+                my_front = 0;
+                my_back = my_size;
+                my_size = my_size+10; 
+                my_used++;
             }
             //space
             else{
@@ -92,6 +285,7 @@ class deque{
             }
         }
     }
+
     
 
 
