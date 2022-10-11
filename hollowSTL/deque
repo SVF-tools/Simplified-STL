@@ -136,7 +136,7 @@ class deque{
     const_reverse_iterator crbegin() const noexcept{
         return const_reverse_iterator(&*p[my_back]);
     }   
-
+    // TODO: Fix these so it wraps around to the other side if needed
     reverse_iterator rend() noexcept{
         return reverse_iterator(&*p[my_front - 1]);
     }
@@ -177,7 +177,8 @@ class deque{
         my_back = -1;
         my_used = 0;
     }
-
+    // TODO: Fix this up so the the 0th element is left empty for rend()
+    // Maybe just fixup like the count insert
     iterator insert( const_iterator pos, const T& value ){
         if (pos == begin()){
             if(has_space()){
@@ -242,13 +243,78 @@ class deque{
         }
         return iterator(nullptr);
     }
+    // TODO: return iterator(pos) for count==0 at the very start
+    // TODO: return iterator to first element inserted when pos == end()
     iterator insert( const_iterator pos, size_type count, const T& value ){
-        if(has_space(count)){
+        //make sure deque has enough space to fit the extra elements
+        if(!has_space(count)){
+            size_t needs = count - (my_size - my_used - 2);
+            increase_size(needs);
+        }
+        if(pos == begin()){
+            for(int i=0; i<count; i++){
+                size_t curr = my_front - 1 < 0 ? my_size + (my_front - 1) : my_front - 1;
+                p[curr] = value;
+                my_front = curr;
+                my_used++;
+            }
+            return begin();
+        }
+        else if (pos == end()){
+            for(int i=0; i<count ;i++){
+                size_t curr = (my_back + 1)%my_size;
+                p[curr] = value;
+                my_back = curr;
+                my_used++;
+            }
             
         }
     }
+    // TODO: return iterator(pos) for first == last
+    // TODO: return iterator to first element inserted when pos == end()
     template< class InputIt >
-    iterator insert( const_iterator pos, InputIt first, InputIt last );
+    iterator insert( const_iterator pos, InputIt first, InputIt last ){
+        size_t temp_size = 10;
+        T* *q = new T*[10]; 
+        InputIt curr = first;
+        size_t count = 0;
+        while(curr != last){
+            q[count] = curr*;
+            count++;
+            if(count == temp_size){
+                T* *k = new T*[temp_size + 10];
+                for(int i=0; i < temp_size; i++){
+                    k[i] = q[i];
+                }
+                q = k;
+                temp_size += 10;
+            }
+        }
+        if(!has_space(count)){
+            increase_size(count);
+        }
+        if(pos == begin()){
+            T* *g = new T[my_size];
+            for(int i=0; i<count; i++){
+                g[i+1] = q[i];
+            }
+            for(int i=0; i<my_used; i++){
+                g[count + i + 1] = p[(my_front+i)%my_size];
+            }
+            p = g;
+            my_front = 1;
+            my_back = my_used + count;
+            my_used += count;
+            return begin();
+        }
+        else if (pos == end()){
+            for(int i=0; i<count; i++){
+                my_back = (my_back+1)%my_size;
+                p[my_back] = q[i];
+                my_used++;
+            } 
+        }
+    }
     iterator insert( const_iterator pos, std::initializer_list<T> ilist );
 
 
