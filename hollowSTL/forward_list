@@ -6,11 +6,23 @@ using namespace std;
 
 template <typename T>
 struct Node{
-            T my_data;
-            Node* next;
-            Node() = default;
-            constexpr explicit Node(T d) : my_data(d) {}
-        };
+        T my_data;
+        Node* next;
+        Node() = default;
+        constexpr explicit Node(T d) : my_data(d) {}
+        operator T(){
+            return my_data;
+        }
+        operator T() const{
+            return my_data;
+        }
+        T* operator&(){
+            return &my_data;
+        }
+        Node operator++(){
+            return next;
+        }
+    };
 
 template <typename T>
 class forward_list{
@@ -30,11 +42,11 @@ class forward_list{
         using pointer               = T*;
         using const_pointer         = const T;
         
-        typedef iterator_base<T>            iterator;
-        typedef const iterator_base<T>      const_iterator;
+        typedef iterator_base<Node<T>>            iterator;
+        typedef const iterator_base<Node<T>>      const_iterator;
 
-        typedef reverse_iterator_base<T>         reverse_iterator;
-        typedef const reverse_iterator_base<T>   const_reverse_iterator;
+        typedef reverse_iterator_base<Node<T>>         reverse_iterator;
+        typedef const reverse_iterator_base<Node<T>>   const_reverse_iterator;
 
     forward_list(){
         my_head = nullptr;
@@ -42,18 +54,56 @@ class forward_list{
         my_size = 0;
     }
 
-    //Element Access
-
+    // ELEMENT ACCESS
     reference front(){
         return my_head->my_data;
     }
 
-    //iterators
-    iterator begin(){
-        return iterator(&my_head->my_data);
+    const_reference front() const{
+        return my_head->my_data;
     }
 
-    //Modifiers
+    // ITERATORS
+    iterator begin() noexcept{
+        return iterator(my_head);
+    }
+    const_iterator begin() const noexcept{
+        return const_iteratorq(my_head);
+    }
+    const_iterator cbegin() const noexcept{
+        return const_iteratorq(my_head);
+    }
+
+    iterator end() noexcept{
+        return iterator(my_tail->next);
+    }
+    const_iterator end() const noexcept{
+        return const_iterator(my_tail->next);
+    }
+    const_iterator cend() const noexcept{
+        return const_iterator(my_tail->next);
+    }
+
+    // CAPACITY
+    bool empty() const noexcept{
+        return my_size == 0;
+    }
+
+    size_type max_size() const noexcept;
+
+    // MODIFIERS
+    void clear() noexcept{
+        my_size = 0;
+        while(my_head != my_tail){
+            Node<T>* temp = my_head;
+            my_head = my_head->next;
+            delete temp;
+        }
+        my_head = nullptr;
+        my_tail = nullptr;
+    }
+
+    
 
     void push_front(value_type data){
         //new node

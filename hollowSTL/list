@@ -144,6 +144,7 @@ class list{
         curr.prev = new_node;
         new_node->prev = temp;
         new_node->next = &curr;
+        my_size++;
         return iterator(new_node);
     }
     iterator insert( const_iterator pos, T&& value ){
@@ -155,49 +156,318 @@ class list{
         curr.prev = new_node;
         new_node->prev = temp;
         new_node->next = &curr;
+        my_size++;
         return iterator(new_node);
     }
     iterator insert( const_iterator pos, size_type count, const T& value ){
+        if(count==0){
+            return iterator(pos);
+        }
         T val = value;
         Node<T> curr = *pos;
         Node<T>* temp = curr.prev;
-        Node<T>* new_node = new Node<T>(val);
-        temp->next = new_node;
-        curr.prev = new_node;
-        new_node->prev = temp;
-        new_node->next = &curr;
-        return iterator(new_node);
+        Node<T>* new_original_node = new Node<T>(val);
+        temp->next = new_original_node;
+        new_original_node->prev = temp;
+        temp = new_original_node;
+        my_size++;
+        for(int i=1; i<count; i++){
+            Node<T>* new_node = new Node<T>(val);
+            temp->next = new_node;
+            new_node->prev = temp;
+            temp = new_node;
+            my_size++;
+        }
+        temp->next = &curr;
+        curr.prev = temp;
+        return iterator(new_original_node);
     }
     template< class InputIt >
-    iterator insert( const_iterator pos, InputIt first, InputIt last );
-    iterator insert( const_iterator pos, std::initializer_list<T> ilist );
+    iterator insert( const_iterator pos, InputIt first, InputIt last ){
+        if(first == last){
+            return iterator(pos);
+        }
+        Node<T> curr = *pos;
+        Node<T>* temp = curr.prev;
+        Node<T>* new_original_node = new Node<T>(*first);
+        temp->next = new_original_node;
+        new_original_node->prev = temp;
+        temp = new_original_node;
+        InputIt it = first;
+        it++;
+        my_size++;
+        while(it != last){
+            Node<T>* new_node = new Node<T>(*it);
+            temp->next = new_node;
+            new_node->prev = temp;
+            temp = new_node;
+            it++;
+            my_size++;
+        }
+        Node<T>* new_node = new Node<T>(*it);
+        temp->next = new_node;
+        new_node->prev = temp;
+        temp = new_node;
+        temp->next = &curr;
+        curr.prev = temp;
+        my_size++;
+        return iterator(new_original_node);
+    }
+    iterator insert( const_iterator pos, std::initializer_list<T> ilist ){
+        size_t count = ilist.size();
+        if(count == 0){
+            return iterator(pos);
+        }
+        Node<T>* start = new Node<T>(ilist[0]);
+        Node<T>* curr = start;
+        for(int i=1; i<=count; i++){
+            Node<T>* new_node = new Node<T>(ilist[i]);
+            curr->next = new_node;
+            new_node->prev = curr;
+            curr = new_node;
+        }
+        Node<T>* p = *pos;
+        p->prev->next = start;
+        start->prev = p->prev;
+        p->prev = curr;
+        curr->next = p;
+        my_size += count;
+        return iterator(start);
+    }
 
-    void push_back(value_type data){
-        //new node
-        Node<T>* new_node = new Node<T>(data);
-        //empty list
-        if (my_size == 0){
+    template< class... Args >
+    iterator emplace( const_iterator pos, Args&&... args );
+
+    iterator erase( const_iterator pos ){
+        Node<T> p = *pos;
+        p.prev->next = p.next;
+        p.next->prev = p.prev;
+        Node<T>* ret = p.next;
+        delete p;
+        return iterator(ret);
+    }
+    iterator erase( const_iterator first, const_iterator last ){
+        Node<T> f = *first;
+        Node<T> l = *last;
+        Node<T>* a = f.prev;
+        Node<T>* b = l.next;
+        Node<T>* curr = a->next;
+        while(curr != b){
+            curr->prev->next = curr->next;
+            curr->next->prev = curr->prev;
+            Node<T>* tmp = curr;
+            curr = curr->next;
+        }
+        return iterator(b);
+    }
+
+    void push_back( const T& value ){
+        Node<T>* new_node = new Node<T>(value);
+        if(my_size == 0){
+            Node<T>* a = new Node<T>();
+            Node<T>* b = new Node<T>();
+            new_node->prev = a;
+            a->next = new_node;
+            new_node->next = b;
+            b->prev = new_node;
             my_head = new_node;
             my_tail = new_node;
-            my_size = 1;
+            my_size++;
         }
-        //not empty list
-        {
-            //list size 1
-            if (my_size == 1){
-                my_tail = new_node;
-                my_head->next = new_node;
-                my_tail->prev = my_head;
-                my_size++;
+        else{
+            new_node->prev = my_tail;
+            new_node->next = my_tail->next;
+            my_tail->next->prev = new_node;
+            my_tail->next = new_node;
+            my_size++;
+        }
+    }
+    void push_back( T&& value ){
+        Node<T>* new_node = new Node<T>(value);
+        if(my_size == 0){
+            Node<T>* a = new Node<T>();
+            Node<T>* b = new Node<T>();
+            new_node->prev = a;
+            a->next = new_node;
+            new_node->next = b;
+            b->prev = new_node;
+            my_head = new_node;
+            my_tail = new_node;
+            my_size++;
+        }
+        else{
+            new_node->prev = my_tail;
+            new_node->next = my_tail->next;
+            my_tail->next->prev = new_node;
+            my_tail->next = new_node;
+            my_size++;
+        }
+    }
+
+    template< class... Args >
+    void emplace_back( Args&&... args );
+
+    void pop_back(){
+        if(my_size == 0){
+            return;
+        }
+        if(my_size == 1){
+            my_head = nullptr;
+            my_tail= nullptr;
+            my_size--;
+            return;
+        }
+        Node<T>* back = my_tail;
+        my_tail = back->prev;
+        my_tail->next = back->next;
+        back->next->prev = my_tail;
+        delete back;
+        my_size--;
+    }
+
+    void push_front( const T& value ){
+        Node<T>* new_node = new Node<T>(value);
+        if(my_size == 0){
+            Node<T>* a = new Node<T>();
+            Node<T>* b = new Node<T>();
+            new_node->prev = a;
+            a->next = new_node;
+            new_node->next = b;
+            b->prev = new_node;
+            my_head = new_node;
+            my_tail = new_node;
+            my_size++;
+        }
+        else{
+            new_node->next = my_head;
+            new_node->prev = my_head->prev;
+            my_head->prev->next = new_node;
+            my_head->prev = new_node;
+            my_size++;
+        }
+    }
+    void push_front( T&& value ){
+        Node<T>* new_node = new Node<T>(value);
+        if(my_size == 0){
+            Node<T>* a = new Node<T>();
+            Node<T>* b = new Node<T>();
+            new_node->prev = a;
+            a->next = new_node;
+            new_node->next = b;
+            b->prev = new_node;
+            my_head = new_node;
+            my_tail = new_node;
+            my_size++;
+        }
+        else{
+            new_node->next = my_head;
+            new_node->prev = my_head->prev;
+            my_head->prev->next = new_node;
+            my_head->prev = new_node;
+            my_size++;
+        }
+    }
+
+    template< class... Args >
+    void emplace_front( Args&&... args );
+
+    void pop_front(){
+        if(my_size == 0){
+            return;
+        }
+        if(my_size == 1){
+            my_head = nullptr;
+            my_tail = nullptr;
+            my_size--;
+            return;
+        }
+        Node<T>* front = my_head;
+        my_head = front->next;
+        my_head->prev = front->prev;
+        front->prev->next = my_head;
+        delete front;
+        my_size--;
+    }
+
+    void resize( size_type count ){
+        if(count == my_size){
+            return;
+        }
+        if(count < my_size){
+            while(my_size > count){
+                pop_back();
             }
-            //list size > 1
-            else{
-                my_tail->next = new_node;
-                new_node->prev = my_tail;
-                my_tail = new_node;
-                my_size++;
+        }
+        else if(count > my_size){
+            size_t diff = count - my_size;
+            for(int i=0; i<diff; i++){
+                if(my_size == 0){
+                    Node<T>* new_node = new Node<T>();
+                    Node<T>* a = new Node<T>();
+                    Node<T>* b = new Node<T>();
+                    new_node->prev = a;
+                    a->next = new_node;
+                    new_node->next = b;
+                    b->prev = new_node;
+                    my_head = new_node;
+                    my_tail = new_node;
+                    my_size++; 
+                }
+                else{
+                    Node<T>* new_node = new Node<T>();
+                    new_node->prev = my_tail;
+                    new_node->next = my_tail->next;
+                    my_tail->next->prev = new_node;
+                    my_tail->next = new_node;
+                    my_tail = new_node;
+                    my_size++;
+                }
+
+            }
+        }
+    }
+    void resize( size_type count, const T& value ){
+        if(count == my_size){
+            return;
+        }
+        if(count < my_size){
+            while(my_size > count){
+                pop_back();
+            }
+        }
+        else if(count > my_size){
+            size_t diff = count - my_size;
+            for(int i=0; i<diff; i++){
+                if(my_size == 0){
+                    Node<T>* new_node = new Node<T>(value);
+                    Node<T>* a = new Node<T>();
+                    Node<T>* b = new Node<T>();
+                    new_node->prev = a;
+                    a->next = new_node;
+                    new_node->next = b;
+                    b->prev = new_node;
+                    my_head = new_node;
+                    my_tail = new_node;
+                    my_size++; 
+                }
+                else{
+                    Node<T>* new_node = new Node<T>(value);
+                    new_node->prev = my_tail;
+                    new_node->next = my_tail->next;
+                    my_tail->next->prev = new_node;
+                    my_tail->next = new_node;
+                    my_tail = new_node;
+                    my_size++;
+                }
             }
         }
     }
 
+    void swap( list& other ){
+        list temp = *this;
+        *this = other;
+        other = temp;
+    }
+
+    
 };

@@ -20,6 +20,12 @@ int main(int argc, char **argv)
   list<const A*> alist;
   A a;
   alist.push_back(&a);
+  
+  list<const A*> blist;
+  A b;
+  blist.push_back(&b);
+
+  alist.swap(blist);
 
   const A *aptr = alist.front();
 
