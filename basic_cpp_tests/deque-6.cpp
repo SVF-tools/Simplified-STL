@@ -20,11 +20,11 @@ int main(int argc, char **argv)
   deque<A> adeque;
   A a;
   adeque.push_back(a);
-
+  
   deque<A>::iterator it = adeque.end();
   const A *aptr = &*it;
 
   aptr->f(ptr);
 
-  return 0;
+  return 0; 
 }
