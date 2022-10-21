@@ -168,7 +168,8 @@ class deque{
     size_type size() const noexcept{
         return my_used;
     }
-    //             ++ Max Size Ommited ++
+    
+    size_type max_size() const noexcept;
 
     void shrink_to_fit(){
         T* *q = new T*[my_used + 2];
@@ -453,18 +454,138 @@ class deque{
     void emplace_back( Args&&... args );
 
     void pop_back(){
-        p[my_back] = nullptr;
-        my_back--;
-        if(my_back == -1){
-            my_back = my_size-1;
+        if(my_used > 0){
+            p[my_back] = nullptr;
+            my_back--;
+            if(my_back == -1){
+                my_back = my_size-1;
+            }
+            my_used--;
         }
     }
 
     void push_front( const T& value ){
-        
+        T val = value;
+        //empty
+        if(my_front == -1){
+            p[0] = &val;
+            my_front = 0;
+            my_back = 0;
+            my_used = 1;
+        }
+        //not empty
+        else{
+            if(has_space()){
+                my_front--;
+                if(my_front == -1){
+                    my_front = my_size-1;
+                }
+                p[my_front] = &val;
+                my_used++;
+            }
+            else{
+                increase_size();
+                my_front--;
+                if(my_front == -1){
+                    my_front = my_size-1;
+                }
+                p[my_front] = &val;
+                my_used++;
+            }
+        }
     }
     void push_front( T&& value ){
-
+        //empty
+        if(my_front == -1){
+            p[0] = &value;
+            my_front = 0;
+            my_back = 0;
+            my_used = 1;
+        }
+        //not empty
+        else{
+            if(has_space()){
+                my_front--;
+                if(my_front == -1){
+                    my_front = my_size-1;
+                }
+                p[my_front] = &value;
+                my_used++;
+            }
+            else{
+                increase_size();
+                my_front--;
+                if(my_front == -1){
+                    my_front = my_size-1;
+                }
+                p[my_front] = &value;
+                my_used++;
+            }
+        }
     }
 
+    // TODO: same as emplace()
+    template< class... Args >
+    void emplace_front( Args&&... args );
+
+    void pop_front(){
+        if(my_used > 0){
+            p[my_front] = nullptr;
+            my_front = (my_front+1)%my_size;
+            my_used--;
+        }
+    }
+
+    void resize( size_type count ){
+        if(count == my_used){
+            return;
+        }
+        if(count < my_used){
+            T* *q = new T*[count+2];
+            for(int i=0; i<count; i++){
+                q[i] = p[(my_front+i)%my_size];
+            }
+            p = q;
+            my_front = 0;
+            my_back = count - 1;
+            my_used = count;
+        }
+        else{
+           size_t diff = count - my_used; 
+           if(!has_space(diff)){
+                increase_size(diff);
+            }
+            for(int i=1; i<=diff; i++){
+                p[my_back+i] = new T();
+            }
+        }
+    }
+    void resize( size_type count, const T&& value ){
+        T val = value;
+        if(count == my_used){
+            return;
+        }
+        if(count < my_used){
+            T* *q = new T*[count+2];
+            for(int i=0; i<count; i++){
+                q[i] = p[(my_front+i)%my_size];
+            }
+            p = q;
+            my_front = 0;
+            my_back = count - 1;
+            my_used = count;
+        }
+        else{
+           size_t diff = count - my_used; 
+           if(!has_space(diff)){
+                increase_size(diff);
+            }
+            for(int i=1; i<=diff; i++){
+                p[my_back+i] = &val;
+            }
+        }
+    }
+
+    // TODO: Implement swap
+    void swap( deque& other );
 };

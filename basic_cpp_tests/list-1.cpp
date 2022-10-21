@@ -20,9 +20,10 @@ int main(int argc, char **argv)
   list<const A*> alist;
   A a;
   alist.push_back(&a);
-
   list<const A*>::const_iterator it = alist.begin();
-  const A *aptr = *it;
+  alist.insert(it, &a);
+  list<const A*>::const_iterator itt = alist.begin();
+  const A *aptr = *itt;
 
   aptr->f(ptr);
 

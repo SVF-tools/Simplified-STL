@@ -6,12 +6,24 @@ using namespace std;
 
 template <typename T>
 struct Node{
-            T my_data;
-            Node* next;
-            Node* prev;
-            Node() = default;
-            constexpr explicit Node(T d) : my_data(d), next(nullptr), prev(nullptr) {}
-        };
+        T my_data;
+        Node* next;
+        Node* prev;
+        Node() = default;
+        constexpr explicit Node(T d) : my_data(d), next(nullptr), prev(nullptr) {}
+        operator T(){
+            return my_data;
+        }
+        operator T() const{
+            return my_data;
+        }
+        Node operator++(){
+            return next;
+        }
+        Node operator--(){
+            return prev;
+        }
+    };
 
 template <typename T>
 class list{
@@ -24,36 +36,141 @@ class list{
     public:
         using value_type            = T;
         using size_type             = size_t;
-        //todo difference type
         using reference             = T&; 
         using const_reference       = const T&;
         using pointer               = T*;
         using const_pointer         = const T;
         
-        typedef iterator_base<T>            iterator;
-        typedef const iterator_base<T>      const_iterator;
+        typedef iterator_base<Node<T>>            iterator;
+        typedef const iterator_base<Node<T>>      const_iterator;
 
-        typedef reverse_iterator_base<T>         reverse_iterator;
-        typedef const reverse_iterator_base<T>   const_reverse_iterator;
+        typedef reverse_iterator_base<Node<T>>         reverse_iterator;
+        typedef const reverse_iterator_base<Node<T>>   const_reverse_iterator;
 
     list(){
         my_head = nullptr;
         my_tail = nullptr;
         my_size = 0;
     }
+    // TODO: Destructor
 
-    //Element Access
+    // ELEMENT ACCESS
 
     reference front(){
         return my_head->my_data;
     }
-
-    //iterators
-    iterator begin(){
-        return iterator(&my_head->my_data);
+    const_reference front() const{
+        return my_head->my_data;
     }
 
-    //Modifiers
+    reference back(){
+        return my_tail->my_data;
+    }
+    const_reference back() const{
+        return my_tail->my_data;
+    }
+
+    // ITERATORS
+    iterator begin() noexcept{
+        return iterator(my_head);
+    }
+    const_iterator begin() const noexcept{
+        return const_iterator(&my_head->my_data);
+    }
+    const_iterator cbegin() const noexcept{
+        return const_iterator(my_head);
+    }
+
+    iterator end() noexcept{
+        return iterator(my_tail->next);
+    }
+    const_iterator end() const noexcept{
+        return const_iterator(my_tail->next);
+    }
+    const_iterator cend() const noexcept{
+        return const_iterator(my_tail->next);
+    }
+
+    reverse_iterator rbegin() noexcept{
+        return reverse_iterator(my_tail);
+    }
+    const_reverse_iterator rbegin() const noexcept{
+        return const_reverse_iterator(my_tail);
+    }
+    const_reverse_iterator crbegin() const noexcept{
+        return const_reverse_iterator(my_tail);
+    }
+
+    reverse_iterator rend() noexcept{
+        return reverse_iterator(my_head->prev);
+    }
+    const_reverse_iterator rend() const noexcept{
+        return const_reverse_iterator(my_head->prev);
+    }
+    const_reverse_iterator crend() const noexcept{
+        return const_reverse_iterator(my_head->prev);
+    }
+
+    // CAPACITY
+    bool empty() const noexcept{
+        return my_size == 0;
+    }
+
+    size_type size() const noexcept{
+        return my_size;
+    }
+
+    size_type max_size() const noexcept;
+
+    // MODIFIERS
+    void clear() noexcept{
+        Node<T>* curr = my_head;
+        while(curr != my_tail){
+            delete curr->prev;
+            curr = curr->next;
+        }
+        delete curr;
+        my_head = new Node<T>();
+        my_tail = new Node<T>();
+        my_size = 0;
+    }
+
+    iterator insert( const_iterator pos, const T& value ){
+        T val = value;
+        Node<T> curr = *pos;
+        Node<T>* temp = curr.prev;
+        Node<T>* new_node = new Node<T>(val);
+        temp->next = new_node;
+        curr.prev = new_node;
+        new_node->prev = temp;
+        new_node->next = &curr;
+        return iterator(new_node);
+    }
+    iterator insert( const_iterator pos, T&& value ){
+        T val = value;
+        Node<T> curr = *pos;
+        Node<T>* temp = curr.prev;
+        Node<T>* new_node = new Node<T>(val);
+        temp->next = new_node;
+        curr.prev = new_node;
+        new_node->prev = temp;
+        new_node->next = &curr;
+        return iterator(new_node);
+    }
+    iterator insert( const_iterator pos, size_type count, const T& value ){
+        T val = value;
+        Node<T> curr = *pos;
+        Node<T>* temp = curr.prev;
+        Node<T>* new_node = new Node<T>(val);
+        temp->next = new_node;
+        curr.prev = new_node;
+        new_node->prev = temp;
+        new_node->next = &curr;
+        return iterator(new_node);
+    }
+    template< class InputIt >
+    iterator insert( const_iterator pos, InputIt first, InputIt last );
+    iterator insert( const_iterator pos, std::initializer_list<T> ilist );
 
     void push_back(value_type data){
         //new node

@@ -80,8 +80,7 @@ class array{
     constexpr const T* data() const noexcept{
         return p;
     }
-    //iterators
-    //begin -- Done
+    // ITERATORS
     constexpr iterator begin() noexcept{
         return iterator(&p[0]);
     }
@@ -131,7 +130,7 @@ class array{
         return const_reverse_iterator(&q[my_size+1]);
     }
 
-    //CAPACITY
+    // CAPACITY
     constexpr bool empty() const noexcept{
         return my_size == 0;
     }
@@ -144,13 +143,13 @@ class array{
         return size();
     }
 
-    //OPERATIONS
+    // OPERATIONS
     constexpr void fill( const T& value ){
         for(int i=0; i<my_size ;i++){
             p[i] = value;
         }
     }
-
+    // TODO: Change this 
     constexpr void swap( array& other ) noexcept{
         for(int i=0; i<my_size; i++){
             p[i] = other[i];
