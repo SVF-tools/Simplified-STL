@@ -103,7 +103,108 @@ class forward_list{
         my_tail = nullptr;
     }
 
-    
+    iterator insert_after( const_iterator pos, const T& value ){
+        T val = value;
+        Node<T> p = *pos;
+        Node<T>* new_node = new Node<T>(val);
+        new_node->next = p.next;
+        p.next = new_node;
+        my_size++;
+        return iterator(new_node);
+    }
+    iterator insert_after( const_iterator pos, T&& value ){
+        T val = value;
+        Node<T> p = *pos;
+        Node<T>* new_node = new Node<T>(val);
+        new_node->next = p.next;
+        p.next = new_node;
+        my_size++;
+        return iterator(new_node);
+    }
+    iterator insert_after( const_iterator pos, size_type count, const T& value ){
+        if(count == 0){
+            return iterator(pos);
+        }
+        T val = value;
+        Node<T> p = *pos;
+        Node<T>* curr = &p;
+        for(int i=0; i<count; i++){
+            Node<T>* new_node = new Node<T>(val);
+            new_node->next = curr->next;
+            curr->next = new_node;
+            curr = new_node;
+            my_size++;
+        }
+        return iterator(curr);
+    }
+    template< class InputIt >
+    iterator insert_after( const_iterator pos, InputIt first, InputIt last ){
+        if(first==last){
+            return iterator(pos);
+        }
+        Node<T> p = *pos;
+        Node<T>* curr = &p;
+        InputIt c = first;
+        while(c != last){
+            Node<T>* new_node = new Node<T>(*c);
+            new_node->next = curr->next;
+            curr->next = new_node;
+            curr = new_node;
+            my_size++;
+            c++;
+        }
+        Node<T>* new_node = new Node<T>(*c);
+        new_node->next = curr->next;
+        curr->next = new_node;
+        curr = new_node;
+        my_size++;
+        return iterator(curr);
+    }
+    iterator insert_after( const_iterator pos, std::initializer_list<T> ilist ){
+        size_t count = ilist.size();
+        if(count == 0){
+            return iterator(pos);
+        }
+        Node<T> p = *pos;
+        Node<T>* curr = &p;
+        for(int i=0; i<count;i++){
+            Node<T>* new_node = new Node<T>(ilist[i]);
+            new_node->next = curr->next;
+            curr->next = new_node;
+            curr = new_node;
+            my_size++;
+        }
+        return iterator(curr);
+    }
+
+    template< class... Args >
+    iterator emplace_after( const_iterator pos, Args&&... args );
+ 
+    iterator erase_after( const_iterator pos ){
+        Node<T> p = *pos;
+        Node<T>* temp = p.next;
+        p.next = temp->next;
+        delete temp;
+        return iterator(p.next);
+    }
+    iterator erase_after( const_iterator first, const_iterator last ){
+        if(first == last){
+            return iterator(last);
+        }
+        Node<T> f = *first;
+        Node<T>* curr = f.next;
+        Node<T> l = *last;
+        Node<T>* ret = l.next;
+        while(curr != ret){
+            Node<T>* temp = curr;
+            curr = curr->next;
+            delete temp;
+        }
+        f.next = ret;
+        return iterator(ret);
+        
+    }
+
 
     void push_front(value_type data){
         //new node
