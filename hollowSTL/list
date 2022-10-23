@@ -28,8 +28,10 @@ struct Node{
 template <typename T>
 class list{
     private:
+        Node<T>* my_before;
         Node<T>* my_head;
         Node<T>* my_tail;
+        Node<T>* my_after;
         size_t my_size;
     
 
@@ -48,11 +50,37 @@ class list{
         typedef const reverse_iterator_base<Node<T>>   const_reverse_iterator;
 
     list(){
+        Node<T>* a = new Node<T>();
+        Node<T>* b = new Node<T>();
+        a->next = b;
+        b->prev = a;
+        my_before = a;
+        my_after = b;
         my_head = nullptr;
         my_tail = nullptr;
         my_size = 0;
     }
     // TODO: Destructor
+
+    private:
+
+    void fixup_pointers(){
+        if(my_size == 0){
+            my_before->next = my_after;
+            my_after->prev = my_before;
+            my_head = nullptr;
+            my_tail = nullptr;
+            return;
+        }
+        Node<T>* curr = my_before;
+        my_head = curr->next;
+        while(curr->next != my_after){
+            curr = curr->next;
+        }
+        my_tail = curr;
+    }
+
+    public:
 
     // ELEMENT ACCESS
 
@@ -82,13 +110,13 @@ class list{
     }
 
     iterator end() noexcept{
-        return iterator(my_tail->next);
+        return iterator(my_after);
     }
     const_iterator end() const noexcept{
-        return const_iterator(my_tail->next);
+        return const_iterator(my_after);
     }
     const_iterator cend() const noexcept{
-        return const_iterator(my_tail->next);
+        return const_iterator(my_after);
     }
 
     reverse_iterator rbegin() noexcept{
@@ -102,13 +130,13 @@ class list{
     }
 
     reverse_iterator rend() noexcept{
-        return reverse_iterator(my_head->prev);
+        return reverse_iterator(my_before);
     }
     const_reverse_iterator rend() const noexcept{
-        return const_reverse_iterator(my_head->prev);
+        return const_reverse_iterator(my_before);
     }
     const_reverse_iterator crend() const noexcept{
-        return const_reverse_iterator(my_head->prev);
+        return const_reverse_iterator(my_before);
     }
 
     // CAPACITY
@@ -145,6 +173,7 @@ class list{
         new_node->prev = temp;
         new_node->next = &curr;
         my_size++;
+        fixup_pointers();
         return iterator(new_node);
     }
     iterator insert( const_iterator pos, T&& value ){
@@ -157,6 +186,7 @@ class list{
         new_node->prev = temp;
         new_node->next = &curr;
         my_size++;
+        fixup_pointers();
         return iterator(new_node);
     }
     iterator insert( const_iterator pos, size_type count, const T& value ){
@@ -180,6 +210,7 @@ class list{
         }
         temp->next = &curr;
         curr.prev = temp;
+        fixup_pointers();
         return iterator(new_original_node);
     }
     template< class InputIt >
@@ -211,6 +242,7 @@ class list{
         temp->next = &curr;
         curr.prev = temp;
         my_size++;
+        fixup_pointers();
         return iterator(new_original_node);
     }
     iterator insert( const_iterator pos, std::initializer_list<T> ilist ){
@@ -232,6 +264,7 @@ class list{
         p->prev = curr;
         curr->next = p;
         my_size += count;
+        fixup_pointers();
         return iterator(start);
     }
 
@@ -469,5 +502,5 @@ class list{
         other = temp;
     }
 
-    
+
 };
