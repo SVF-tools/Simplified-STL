@@ -192,7 +192,7 @@ class deque{
         my_used = 0;
     }
     
-    // TODO [all insert()]: Add cases for pos in middle
+    // TODO [all insert()]: Add cases for pos in middle / restructure
     iterator insert( const_iterator pos, const T& value ){
         if(!has_space()){
             increase_size();
@@ -211,17 +211,17 @@ class deque{
         }
         return iterator(nullptr);
     }
-    iterator insert( const_iterator pos, T&& value ){
+    iterator insert( const_iterator pos, T&& value ){   
         if (pos == begin()){
             if(has_space()){
                 size_t temp = my_front == 0 ? my_size-1 : my_front-1;
-                p[temp] = value;
+                p[temp] = &value;
                 my_front = temp;
                 return begin();
             }
             else{
                 increase_size();
-                p[0] = value;
+                p[0] = &value;
                 my_front = 0;
                 my_used++;
                 return begin();
@@ -229,13 +229,13 @@ class deque{
         }
         else if (pos == end()){
             if(has_space()){
-                p[(my_back+1)%my_size] = value;
+                p[(my_back+1)%my_size] = &value;
                 my_back = (my_back+1)%my_size;
                 return iterator(&*p[my_back]);
             }
             else{
                 increase_size();
-                p[my_back+1] = value;
+                p[my_back+1] = &value;
                 my_used++;
                 my_back++;
                 return iterator(&*p[my_back]);

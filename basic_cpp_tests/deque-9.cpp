@@ -20,7 +20,7 @@ int main(int argc, char **argv)
   deque<const A*> adeque;
   A a;
   adeque.push_front(&a);
-  adeque.resize(3, &a);
+  adeque.insert(adeque.begin(), &a);
   const A *aptr = adeque.front();
 
   aptr->f(ptr);
