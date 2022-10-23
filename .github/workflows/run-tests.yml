@@ -5,8 +5,7 @@ on: push
 
 jobs:
   build:
-    runs-on:
-        os: ubuntu-latest
+    runs-on: ubuntu-latest
 
     steps:
       # checkout the repo
