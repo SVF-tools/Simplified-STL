@@ -27,8 +27,10 @@ struct Node{
 template <typename T>
 class forward_list{
     private:
+        Node<T>* my_before;
         Node<T>* my_head;
         Node<T>* my_tail;
+        Node<T>* my_after;
         size_t my_size;
 
         
@@ -45,14 +47,35 @@ class forward_list{
         typedef iterator_base<Node<T>>            iterator;
         typedef const iterator_base<Node<T>>      const_iterator;
 
-        typedef reverse_iterator_base<Node<T>>         reverse_iterator;
-        typedef const reverse_iterator_base<Node<T>>   const_reverse_iterator;
-
     forward_list(){
+        Node<T>* bef = new Node<T>();
+        Node<T>* aft = new Node<T>();
+        bef->next = aft;
+        my_before = bef;
+        my_after = aft;
         my_head = nullptr;
         my_tail = nullptr;
         my_size = 0;
     }
+
+    private:
+
+    void fixup_pointers(){
+        if(my_size == 0){
+            my_head = nullptr;
+            my_tail = nullptr;
+            my_before->next = my_after;
+            return;
+        }
+        Node<T>* curr = my_before;
+        my_head = curr->next;
+        while(curr->next != my_after){
+            curr = curr->next;
+        }
+        my_tail = curr;
+    }
+
+    public:
 
     // ELEMENT ACCESS
     reference front(){
@@ -64,6 +87,16 @@ class forward_list{
     }
 
     // ITERATORS
+    iterator before_begin() noexcept{
+        return iterator(my_before);
+    }
+    const_iterator before_begin() const noexcept{
+        return const_iterator(my_before);
+    }
+    const_iterator cbefore_begin() const noexcept{
+        return const_iterator(my_before);
+    }
+
     iterator begin() noexcept{
         return iterator(my_head);
     }
@@ -75,13 +108,13 @@ class forward_list{
     }
 
     iterator end() noexcept{
-        return iterator(my_tail->next);
+        return iterator(my_after);
     }
     const_iterator end() const noexcept{
-        return const_iterator(my_tail->next);
+        return const_iterator(my_after);
     }
     const_iterator cend() const noexcept{
-        return const_iterator(my_tail->next);
+        return const_iterator(my_after);
     }
 
     // CAPACITY
@@ -93,14 +126,20 @@ class forward_list{
 
     // MODIFIERS
     void clear() noexcept{
-        my_size = 0;
-        while(my_head != my_tail){
-            Node<T>* temp = my_head;
-            my_head = my_head->next;
+
+        if(my_size == 0){
+            return;
+        }
+        Node<T>* curr = my_head;
+        while(curr != my_after){
+            Node<T>* temp = curr;
+            curr = curr->next;
             delete temp;
         }
+        my_before->next = my_after;
         my_head = nullptr;
         my_tail = nullptr;
+        my_size = 0;
     }
 
     iterator insert_after( const_iterator pos, const T& value ){
@@ -110,6 +149,9 @@ class forward_list{
         new_node->next = p.next;
         p.next = new_node;
         my_size++;
+        
+        fixup_pointers();
+
         return iterator(new_node);
     }
     iterator insert_after( const_iterator pos, T&& value ){
@@ -119,6 +161,9 @@ class forward_list{
         new_node->next = p.next;
         p.next = new_node;
         my_size++;
+
+        fixup_pointers();
+
         return iterator(new_node);
     }
     iterator insert_after( const_iterator pos, size_type count, const T& value ){
@@ -132,9 +177,12 @@ class forward_list{
             Node<T>* new_node = new Node<T>(val);
             new_node->next = curr->next;
             curr->next = new_node;
-            curr = new_node;
             my_size++;
+            curr = new_node;
         }
+
+        fixup_pointers();
+
         return iterator(curr);
     }
     template< class InputIt >
@@ -158,6 +206,8 @@ class forward_list{
         curr->next = new_node;
         curr = new_node;
         my_size++;
+
+        fixup_pointers();
         return iterator(curr);
     }
     iterator insert_after( const_iterator pos, std::initializer_list<T> ilist ){
@@ -174,6 +224,7 @@ class forward_list{
             curr = new_node;
             my_size++;
         }
+        fixup_pointers();
         return iterator(curr);
     }
 
@@ -181,10 +232,15 @@ class forward_list{
     iterator emplace_after( const_iterator pos, Args&&... args );
  
     iterator erase_after( const_iterator pos ){
+        if(my_size == 0 || pos == const_iterator(my_tail)){
+            return end();
+        }
         Node<T> p = *pos;
         Node<T>* temp = p.next;
         p.next = temp->next;
         delete temp;
+        my_size--;
+        fixup_pointers();
         return iterator(p.next);
     }
     iterator erase_after( const_iterator first, const_iterator last ){
@@ -194,41 +250,124 @@ class forward_list{
         Node<T> f = *first;
         Node<T>* curr = f.next;
         Node<T> l = *last;
-        Node<T>* ret = l.next;
-        while(curr != ret){
+        Node<T>* ln = l.next;
+        while(curr->next != ln){
             Node<T>* temp = curr;
             curr = curr->next;
             delete temp;
+            my_size--;
         }
-        f.next = ret;
-        return iterator(ret);
-        
+        f.next = curr;
+        fixup_pointers();
+        return iterator(curr);
     }
 
-
-    void push_front(value_type data){
-        //new node
-        Node<T>* new_node = new Node<T>(data);
+    void push_front( const T& value ){
+        Node<T>* new_node = new Node<T>(value);
         //empty list
         if (my_size == 0){
+            new_node->next = my_after;
+            my_before->next = new_node;
             my_head = new_node;
             my_tail = new_node;
-            my_size = 1;
+            my_size++;
         }
         //not empty list
         {
-            //list size 1
-            if (my_size == 1){
-                my_tail = new_node;
-                my_head->next = new_node;
-                my_size++;
+            new_node->next = my_head;
+            my_before->next = new_node;
+            my_head = new_node;
+            my_size++;
+        }
+    }
+    void push_front( T&& value ){
+        Node<T>* new_node = new Node<T>(value);
+        //empty list
+        if (my_size == 0){
+            new_node->next = my_after;
+            my_before->next = new_node;
+            my_head = new_node;
+            my_tail = new_node;
+            my_size++;
+        }
+        //not empty list
+        {
+            new_node->next = my_head;
+            my_before->next = new_node;
+            my_head = new_node;
+            my_size++;
+        }
+    }
+
+    template< class... Args >
+    void emplace_front( Args&&... args );
+
+    void pop_front(){
+        if(my_size == 0){
+            return;
+        }
+        Node<T>* f = my_front;
+        my_before->next = f->next;
+        my_front = f->next;
+        delete f;
+        my_size--;
+    }
+
+    void resize( size_type count ){
+        if(count == my_size){
+            return;
+        }
+        if(count < my_size){
+            Node<T>* curr = my_before;
+            for(int i=0; i<count; i++){
+                curr = curr->next;
             }
-            //list size > 1
-            else{
+            curr->next = my_after;
+            my_tail = curr;
+            my_size = count;
+            return;
+        }
+        else{
+            size_t diff = count - my_size;
+            for(int i=0; i<diff; i++){
+                Node<T>* new_node = new Node<T>();
+                new_node->next = my_after;
                 my_tail->next = new_node;
                 my_tail = new_node;
                 my_size++;
             }
         }
     }
+    void resize( size_type count, const value_type& value ){
+        if(count == my_size){
+            return;
+        }
+        if(count < my_size){
+            Node<T>* curr = my_before;
+            for(int i=0; i<count; i++){
+                curr = curr->next;
+            }
+            curr->next = my_after;
+            my_tail = curr;
+            my_size = count;
+            return;
+        }
+        else{
+            size_t diff = count - my_size;
+            for(int i=0; i<diff; i++){
+                Node<T>* new_node = new Node<T>(value);
+                new_node->next = my_after;
+                my_tail->next = new_node;
+                my_tail = new_node;
+                my_size++;
+            }
+        }
+    }
+
+    void swap( forward_list& other ){
+        forward_list temp = *this;
+        *this = other;
+        other = temp;
+    }
+
 };
