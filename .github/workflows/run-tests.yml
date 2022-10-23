@@ -15,7 +15,7 @@ jobs:
           node-version: 12
           
       # setup the environment 
-      - name: ubuntu-setup
+      - name: ubuntu-setup and tests
         run: |
           sudo apt-get update
           sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
@@ -26,10 +26,6 @@ jobs:
           source ./build.sh
           source ./setup.sh
           cd ..
-          
-      #run tests
-      - name: run-tests
-        run: |
           cd workflow_tests
           ./run-all-tests-ubuntu.sh
          
