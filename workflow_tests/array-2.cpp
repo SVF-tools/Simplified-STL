@@ -24,11 +24,9 @@ int main(int argc, char **argv)
   aarray[0] = a1;
   aarray[1] = a1;
 
-  array<const A *, 2>::reverse_iterator it = aarray.rend();
-  //it++;
-  const A *aptr = *it;
+  const A *aptr = aarray.front();
 
   aptr->f(ptr);
 
-  return 0; 
+  return 0;
 }

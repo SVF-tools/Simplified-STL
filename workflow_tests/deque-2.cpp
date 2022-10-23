@@ -1,5 +1,5 @@
 #include "aliascheck.h"
-#include <array>
+#include <deque>
 
 using namespace std;
 
@@ -17,18 +17,14 @@ int main(int argc, char **argv)
 {
   int *ptr = &global_obj;
 
-  array<const A *, 2> aarray;
-  A *a0 = new A;
-  A *a1 = new A;
+  deque<const A*> adeque;
+  A a;
+  adeque.push_back(&a);
 
-  aarray[0] = a1;
-  aarray[1] = a1;
-
-  array<const A *, 2>::reverse_iterator it = aarray.rend();
-  //it++;
+  deque<const A*>::iterator it = adeque.begin();
   const A *aptr = *it;
 
   aptr->f(ptr);
 
-  return 0; 
+  return 0;
 }

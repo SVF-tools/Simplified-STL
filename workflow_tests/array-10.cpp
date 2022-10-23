@@ -18,15 +18,11 @@ int main(int argc, char **argv)
   int *ptr = &global_obj;
 
   array<const A *, 2> aarray;
-  A *a0 = new A;
   A *a1 = new A;
 
-  aarray[0] = a1;
-  aarray[1] = a1;
+  aarray.fill(a1);
 
-  array<const A *, 2>::reverse_iterator it = aarray.rend();
-  //it++;
-  const A *aptr = *it;
+  const A *aptr = aarray[0];
 
   aptr->f(ptr);
 

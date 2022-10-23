@@ -1,5 +1,6 @@
 #include "aliascheck.h"
-#include <array>
+#include <iostream>
+#include <forward_list>
 
 using namespace std;
 
@@ -17,18 +18,17 @@ int main(int argc, char **argv)
 {
   int *ptr = &global_obj;
 
-  array<const A *, 2> aarray;
-  A *a0 = new A;
-  A *a1 = new A;
+  forward_list<const A*> alist;
+  A *a = new A;
 
-  aarray[0] = a1;
-  aarray[1] = a1;
+  alist.push_front(a);
+  alist.push_front(a);
+  alist.erase_after(alist.begin(), alist.end());
 
-  array<const A *, 2>::reverse_iterator it = aarray.rend();
-  //it++;
+  forward_list<const A*>::iterator it = alist.begin();
   const A *aptr = *it;
 
   aptr->f(ptr);
 
-  return 0; 
+  return 0;
 }
