@@ -1,0 +1,34 @@
+name: svf-example
+
+# Triggers the workflow on push or pull request events
+on: [push]
+
+jobs:
+  build:
+    runs-on:
+        os: ubuntu-latest
+
+    steps:
+      # checkout the repo
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 12
+          
+      # setup the environment 
+      - name: ubuntu-setup
+        run: |
+          sudo apt-get update
+          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+          sudo apt-get update
+          sudo apt-get install cmake gcc g++ nodejs doxygen graphviz python3
+          git clone https://github.com/SVF-tools/SVF.git
+          cd SVF
+          source ./build.sh
+          cd ..
+          
+      #run tests
+      - name: run-tests
+        run: |
+        echo testing...
+         

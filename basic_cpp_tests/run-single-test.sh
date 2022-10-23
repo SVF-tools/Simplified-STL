@@ -5,6 +5,6 @@ FLAGS="clang++ -S -c -emit-llvm"
 file=$1
 
 
-$CLANGCPP ${FLAGS} ${file} -o check.bc
+$CLANGCPP ${FLAGS} ${file} -o check.bc 
 wpa -ander -dump-callgraph check.bc
 
