@@ -24,7 +24,7 @@ jobs:
           git clone https://github.com/SVF-tools/SVF.git
           cd SVF
           source ./build.sh
-          . ./setup.sh
+          source ./setup.sh
           cd ..
           
       #run tests
