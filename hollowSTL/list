@@ -277,6 +277,7 @@ class list{
         p.next->prev = p.prev;
         Node<T>* ret = p.next;
         delete p;
+        my_size--;
         return iterator(ret);
     }
     iterator erase( const_iterator first, const_iterator last ){
@@ -290,49 +291,47 @@ class list{
             curr->next->prev = curr->prev;
             Node<T>* tmp = curr;
             curr = curr->next;
+            my_size--;
         }
+
         return iterator(b);
     }
 
     void push_back( const T& value ){
         Node<T>* new_node = new Node<T>(value);
         if(my_size == 0){
-            Node<T>* a = new Node<T>();
-            Node<T>* b = new Node<T>();
-            new_node->prev = a;
-            a->next = new_node;
-            new_node->next = b;
-            b->prev = new_node;
+            new_node->prev = my_before;
+            my_before->next = new_node;
+            new_node->next = my_after;
+            my_after->prev = new_node;
             my_head = new_node;
             my_tail = new_node;
             my_size++;
         }
         else{
             new_node->prev = my_tail;
-            new_node->next = my_tail->next;
-            my_tail->next->prev = new_node;
             my_tail->next = new_node;
+            new_node->next = my_after;
+            my_after->prev = new_node;
             my_size++;
         }
     }
     void push_back( T&& value ){
         Node<T>* new_node = new Node<T>(value);
         if(my_size == 0){
-            Node<T>* a = new Node<T>();
-            Node<T>* b = new Node<T>();
-            new_node->prev = a;
-            a->next = new_node;
-            new_node->next = b;
-            b->prev = new_node;
+            new_node->prev = my_before;
+            my_before->next = new_node;
+            new_node->next = my_after;
+            my_after->prev = new_node;
             my_head = new_node;
             my_tail = new_node;
             my_size++;
         }
         else{
             new_node->prev = my_tail;
-            new_node->next = my_tail->next;
-            my_tail->next->prev = new_node;
             my_tail->next = new_node;
+            new_node->next = my_after;
+            my_after->prev = new_node;
             my_size++;
         }
     }
@@ -345,6 +344,8 @@ class list{
             return;
         }
         if(my_size == 1){
+            my_before->next = my_after;
+            my_after->prev = my_before;
             my_head = nullptr;
             my_tail= nullptr;
             my_size--;
@@ -352,8 +353,8 @@ class list{
         }
         Node<T>* back = my_tail;
         my_tail = back->prev;
-        my_tail->next = back->next;
-        back->next->prev = my_tail;
+        my_tail->next = my_after;
+        my_after->prev = my_tail;
         delete back;
         my_size--;
     }
@@ -361,42 +362,40 @@ class list{
     void push_front( const T& value ){
         Node<T>* new_node = new Node<T>(value);
         if(my_size == 0){
-            Node<T>* a = new Node<T>();
-            Node<T>* b = new Node<T>();
-            new_node->prev = a;
-            a->next = new_node;
-            new_node->next = b;
-            b->prev = new_node;
+            new_node->prev = my_before;
+            my_before->next = new_node;
+            new_node->next = my_after;
+            my_after->prev = new_node;
             my_head = new_node;
             my_tail = new_node;
             my_size++;
         }
         else{
             new_node->next = my_head;
-            new_node->prev = my_head->prev;
-            my_head->prev->next = new_node;
+            new_node->prev = my_before;
+            my_before->next = new_node;
             my_head->prev = new_node;
+            my_head = new_node;
             my_size++;
         }
     }
     void push_front( T&& value ){
         Node<T>* new_node = new Node<T>(value);
         if(my_size == 0){
-            Node<T>* a = new Node<T>();
-            Node<T>* b = new Node<T>();
-            new_node->prev = a;
-            a->next = new_node;
-            new_node->next = b;
-            b->prev = new_node;
+            new_node->prev = my_before;
+            my_before->next = new_node;
+            new_node->next = my_after;
+            my_after->prev = new_node;
             my_head = new_node;
             my_tail = new_node;
             my_size++;
         }
         else{
             new_node->next = my_head;
-            new_node->prev = my_head->prev;
-            my_head->prev->next = new_node;
+            new_node->prev = my_before;
+            my_before->next = new_node;
             my_head->prev = new_node;
+            my_head = new_node;
             my_size++;
         }
     }
@@ -409,6 +408,8 @@ class list{
             return;
         }
         if(my_size == 1){
+            my_before->next = my_after;
+            my_after->prev = my_before;
             my_head = nullptr;
             my_tail = nullptr;
             my_size--;
@@ -416,8 +417,8 @@ class list{
         }
         Node<T>* front = my_head;
         my_head = front->next;
-        my_head->prev = front->prev;
-        front->prev->next = my_head;
+        my_head->prev = my_before;
+        my_before->next = my_head;
         delete front;
         my_size--;
     }
@@ -436,12 +437,10 @@ class list{
             for(int i=0; i<diff; i++){
                 if(my_size == 0){
                     Node<T>* new_node = new Node<T>();
-                    Node<T>* a = new Node<T>();
-                    Node<T>* b = new Node<T>();
-                    new_node->prev = a;
-                    a->next = new_node;
-                    new_node->next = b;
-                    b->prev = new_node;
+                    new_node->prev = my_before;
+                    my_before->next = new_node;
+                    new_node->next = my_after;
+                    my_after->prev = new_node;
                     my_head = new_node;
                     my_tail = new_node;
                     my_size++; 
@@ -449,13 +448,12 @@ class list{
                 else{
                     Node<T>* new_node = new Node<T>();
                     new_node->prev = my_tail;
-                    new_node->next = my_tail->next;
-                    my_tail->next->prev = new_node;
+                    new_node->next = my_after;
+                    my_after->prev = new_node;
                     my_tail->next = new_node;
                     my_tail = new_node;
                     my_size++;
                 }
-
             }
         }
     }
@@ -473,12 +471,10 @@ class list{
             for(int i=0; i<diff; i++){
                 if(my_size == 0){
                     Node<T>* new_node = new Node<T>(value);
-                    Node<T>* a = new Node<T>();
-                    Node<T>* b = new Node<T>();
-                    new_node->prev = a;
-                    a->next = new_node;
-                    new_node->next = b;
-                    b->prev = new_node;
+                    new_node->prev = my_before;
+                    my_before->next = new_node;
+                    new_node->next = my_after;
+                    my_after->prev = new_node;
                     my_head = new_node;
                     my_tail = new_node;
                     my_size++; 
@@ -486,8 +482,8 @@ class list{
                 else{
                     Node<T>* new_node = new Node<T>(value);
                     new_node->prev = my_tail;
-                    new_node->next = my_tail->next;
-                    my_tail->next->prev = new_node;
+                    new_node->next = my_after;
+                    my_after->prev = new_node;
                     my_tail->next = new_node;
                     my_tail = new_node;
                     my_size++;
