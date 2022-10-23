@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 
   deque<const A*> adeque;
   A a;
-  adeque.push_back(&a);
+  adeque.push_front(&a);
   const A *aptr = adeque.front();
 
   aptr->f(ptr);

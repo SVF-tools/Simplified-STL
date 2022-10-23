@@ -1,5 +1,5 @@
 #include "aliascheck.h"
-#include <list>
+#include <deque>
 
 using namespace std;
 
@@ -17,12 +17,14 @@ int main(int argc, char **argv)
 {
   int *ptr = &global_obj;
 
-  list<const A*> alist;
+  deque<A> adeque;
   A a;
-  alist.push_back(&a);
-  const A *aptr = alist.front();
+  adeque.push_back(a);
+  
+  deque<A>::iterator it = adeque.end();
+  const A *aptr = &*it;
 
   aptr->f(ptr);
 
-  return 0;
+  return 0; 
 }

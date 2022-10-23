@@ -22,6 +22,8 @@ int main(int argc, char **argv)
   A *a = new A;
 
   alist.push_front(a);
+  alist.push_front(a);
+  alist.erase_after(alist.begin(), alist.end());
 
   forward_list<const A*>::iterator it = alist.begin();
   const A *aptr = *it;

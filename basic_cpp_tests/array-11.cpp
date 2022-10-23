@@ -1,5 +1,5 @@
 #include "aliascheck.h"
-#include <list>
+#include <array>
 
 using namespace std;
 
@@ -17,12 +17,15 @@ int main(int argc, char **argv)
 {
   int *ptr = &global_obj;
 
-  list<const A*> alist;
-  A a;
-  alist.push_back(&a);
-  const A *aptr = alist.front();
+  array<const A *, 2> aarray;
+  A *a1 = new A;
+
+  aarray.fill(a1);
+  array<const A *, 2> barray;
+  barray.swap(aarray);
+  const A *aptr = barray[0];
 
   aptr->f(ptr);
 
-  return 0;
+  return 0; 
 }
