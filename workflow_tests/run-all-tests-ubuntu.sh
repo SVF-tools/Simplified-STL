@@ -1,7 +1,6 @@
-FLAGS="-Xclang -disable-O0-optnone -g -c -emit-llvm"
+FLAGS="clang++ -S -c -emit-llvm"
 FLAGS="${FLAGS} -I../hollowSTL"
-FLAGS="${FLAGS} -std=c++11 -stdlib=libc++"
-#FLAGS="-g ${FLAGS}"
+
 
 FILES=`ls *.cpp`
 
@@ -11,7 +10,6 @@ for file in ${FILES}
 do
 	file=${file%.*}
 	echo ${file}
-	$CLANGCPP ${FLAGS} -o ${file}.ll ${file}.cpp
-	$LLVMOPT -mem2reg -S -o ${file}.mem2reg.ll ${file}.ll
-	wpa -ander -stat=false ${file}.mem2reg.ll
+	$CLANGCPP ${FLAGS} -o check.bc ${file}.cpp
+	wpa -ander -stat=false check.bc
 done

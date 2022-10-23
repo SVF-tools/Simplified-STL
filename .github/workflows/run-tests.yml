@@ -1,4 +1,4 @@
-name: svf-example
+name: run-tests
 
 # Triggers the workflow on push or pull request events
 on: push
@@ -29,5 +29,6 @@ jobs:
       #run tests
       - name: run-tests
         run: |
-          echo testing...
+          cd workflow_tests
+          ./run-all-tests-ubuntu.sh
          
