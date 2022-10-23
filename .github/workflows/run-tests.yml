@@ -1,7 +1,7 @@
 name: svf-example
 
 # Triggers the workflow on push or pull request events
-on: [push]
+on: push
 
 jobs:
   build:
@@ -30,5 +30,5 @@ jobs:
       #run tests
       - name: run-tests
         run: |
-        echo testing...
+          echo testing...
          
